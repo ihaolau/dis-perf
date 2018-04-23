@@ -1,0 +1,41 @@
+<assembly xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/assembly-1.0.0.xsd">
+    <formats>
+        <format>zip</format>
+    </formats>
+    <includeBaseDirectory>true</includeBaseDirectory>
+    <fileSets>
+        <fileSet>
+            <directory>bin</directory>
+            <includes>
+                <include>start_consumer.sh</include>
+                <include>start_producer.sh</include>
+            </includes>
+            <outputDirectory>bin</outputDirectory>
+        </fileSet>
+    </fileSets>
+    <files>
+        <file>
+            <source>src/main/resources/dis.properties.templeate</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>dis.properties</destName>
+        </file>
+        <file>
+            <source>src/main/resources/log4j2.xml</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>log4j2.xml</destName>
+        </file>
+        <file>
+            <source>README.md</source>
+            <outputDirectory>/</outputDirectory>
+            <destName>README.md</destName>
+        </file>
+    </files>
+    <dependencySets>
+        <dependencySet>
+            <useProjectArtifact>true</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <scope>runtime</scope>
+        </dependencySet>
+    </dependencySets>
+</assembly>
