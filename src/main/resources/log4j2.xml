@@ -25,6 +25,7 @@
         <logger name="org.apache.http.headers" level="INFO"/>
 
         <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="INFO"/>
+        <logger name="com.bigdata.dis.sdk.demo.consumer.kafka.AppKafkaConsumerThread" level="INFO"/>
 
     </Loggers>
 </Configuration>
