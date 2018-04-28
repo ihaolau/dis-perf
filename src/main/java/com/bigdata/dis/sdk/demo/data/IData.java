@@ -1,7 +1,7 @@
 package com.bigdata.dis.sdk.demo.data;
 
-import com.bigdata.dis.data.iface.request.PutRecordsRequest;
+import com.huaweicloud.dis.iface.data.iface.request.PutRecordsRequest;
 
 public interface IData {
-    PutRecordsRequest createRequest();
+    PutRecordsRequest createRequest(String streamName);
 }

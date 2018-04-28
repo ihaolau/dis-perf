@@ -8,8 +8,7 @@
         <fileSet>
             <directory>bin</directory>
             <includes>
-                <include>start_consumer.sh</include>
-                <include>start_producer.sh</include>
+                <include>**/*</include>
             </includes>
             <outputDirectory>bin</outputDirectory>
         </fileSet>

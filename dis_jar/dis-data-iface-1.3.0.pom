@@ -5,7 +5,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.bigdata.dis</groupId>
 	<artifactId>dis-data-iface</artifactId>
-	<version>1.2.3</version>
+	<version>1.3.0</version>
 	<name>dis-data-iface</name>
 	<url>http://maven.apache.org</url>
 	<properties>

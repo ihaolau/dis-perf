@@ -6,21 +6,19 @@ import com.bigdata.dis.sdk.demo.data.RandomData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.concurrent.*;
+import java.util.concurrent.Executors;
 
 public class AppProducer extends Scheduled {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppProducer.class);
 
-    private static Scheduled scheduled = new AppProducer();
-
-    public void startThreads() {
-        executorServicePool = Executors.newFixedThreadPool(Constants.THREAD_NUM);
-        for (int threadIndex = 0; threadIndex < Constants.THREAD_NUM; threadIndex++) {
-            executorServicePool.submit(new AppProducerThread(scheduled.statistics, new RandomData()));
+    public void startThreads(String streamName) {
+        executorServicePool = Executors.newFixedThreadPool(Constants.PRODUCER_THREAD_NUM);
+        for (int threadIndex = 0; threadIndex < Constants.PRODUCER_THREAD_NUM; threadIndex++) {
+            executorServicePool.submit(new AppProducerThread(streamName, this.statistics, new RandomData()));
         }
     }
 
     public static void main(String[] args) {
-        scheduled.run();
+        new AppProducer().run(Constants.STREAM_NAME);
     }
 }

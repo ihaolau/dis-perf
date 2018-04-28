@@ -1,26 +1,50 @@
-region=cn-north-1
+region=cn-south-1
 ak=
 sk=
 projectId=
-endpoint=https://dis.cn-north-1.myhwclouds.com:20004
+endpoint=https://139.159.241.13:443
 # 通道名称
-stream_name=
+stream_name=dis-long-test
 
-# 启动多少个发送线程
-thread_num=1
-# 每个发送线程发送多少次请求
-request_num=1
-# 每个发送请求包含多少条消息
-record_in_request=1
-# 每条消息的长度(bytes)
-record_length=10
-# 每次调用上传下载接口Sleep间隔(ms)
-sleep_time=0
 
-# 消费端每次请求最大期望接收条数
-consumer_limit=10000
-# 消费起始位置 (-2从最旧数据开始消费; -1从最新数据开始消费; 其他值则从指定位置消费)
+# 总共发送的消息条数(-1代表无限制)
+producer_record_num=100000
+# 每条消息的长度(B)
+producer_record_length=1024
+# 发送的线程数
+producer_thread_num=10
+# 每次发送请求包含的消息条数
+producer_request_record_num=200
+# 每次请求的Sleep间隔(ms)
+producer_request_sleep_time=0
+
+
+# 消费端开始消费的起始位置(-2: 从最旧开始消费; -1: 从最新开始消费; 自然数N(N>=0): 从指定位置开始消费)
 consumer_offset=-1
-# 分区数量 (auto表示自动调用describe接口获取分区数量)
-partition_num=auto
-IS_DEFAULT_TRUSTED_JKS_ENABLED=false
+# 消费的分区数量(auto: 自动获取所有分区并消费; 正整数N(N>0): 只消费前N个分区的数据
+consumer_partition_num=auto
+# 每次消费请求最大期望接收条数
+consumer_limit=10000
+
+
+# 创建通道的分区数
+create_partition_num=50
+# 创建通道的类型(COMMON: 普通通道; ADVANCED: 高级通道)
+create_stream_type=ADVANCED
+# 创建通道的生命周期(1~7)
+create_data_duration=7
+# 创建通道的转储OBS桶名称(为空则不转储)
+create_obs_bucket_name=
+# 创建通道转储OBS的委托名称
+create_agency_name=
+
+
+# 自动测试(创建/上传/详情/删除)的循环次数(-1: 无限制运行; 自然数N(N>0): 只运行指定次数)
+auto_run_num=-1
+# 自动测试时通道名称携带的字符串，用于标记通道来源
+auto_run_user_name=dis
+
+
+records.retries=8
+#backoff.max.interval.ms=10000
+#exception.retries=3

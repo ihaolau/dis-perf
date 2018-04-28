@@ -1,16 +1,16 @@
 package com.bigdata.dis.sdk.demo.consumer.async;
 
-import com.bigdata.dis.data.iface.request.GetPartitionCursorRequest;
-import com.bigdata.dis.data.iface.request.GetRecordsRequest;
-import com.bigdata.dis.data.iface.response.GetPartitionCursorResult;
-import com.bigdata.dis.data.iface.response.GetRecordsResult;
-import com.bigdata.dis.data.iface.response.Record;
-import com.bigdata.dis.sdk.DISAsync;
-import com.bigdata.dis.sdk.DISClientAsync;
-import com.bigdata.dis.sdk.core.handler.AsyncHandler;
 import com.bigdata.dis.sdk.demo.common.Constants;
-import com.bigdata.dis.stream.iface.request.DescribeStreamRequest;
-import com.bigdata.dis.stream.iface.response.DescribeStreamResult;
+import com.huaweicloud.dis.DISAsync;
+import com.huaweicloud.dis.DISClientAsync;
+import com.huaweicloud.dis.core.handler.AsyncHandler;
+import com.huaweicloud.dis.iface.data.iface.request.GetPartitionCursorRequest;
+import com.huaweicloud.dis.iface.data.iface.request.GetRecordsRequest;
+import com.huaweicloud.dis.iface.data.iface.response.GetPartitionCursorResult;
+import com.huaweicloud.dis.iface.data.iface.response.GetRecordsResult;
+import com.huaweicloud.dis.iface.data.iface.response.Record;
+import com.huaweicloud.dis.iface.stream.iface.request.DescribeStreamRequest;
+import com.huaweicloud.dis.iface.stream.iface.response.DescribeStreamResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

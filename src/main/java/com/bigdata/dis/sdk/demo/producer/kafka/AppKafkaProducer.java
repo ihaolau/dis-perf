@@ -1,4 +1,4 @@
-package com.bigdata.dis.sdk.demo.producer.async;
+package com.bigdata.dis.sdk.demo.producer.kafka;
 
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Scheduled;
@@ -8,15 +8,17 @@ import org.slf4j.LoggerFactory;
 
 import java.util.concurrent.Executors;
 
-public class AppProducerAsync extends Scheduled {
-    private static final Logger LOGGER = LoggerFactory.getLogger(AppProducerAsync.class);
+public class AppKafkaProducer extends Scheduled {
+    private static final Logger LOGGER = LoggerFactory.getLogger(AppKafkaProducer.class);
+
+    private static Scheduled scheduled = new AppKafkaProducer();
 
     public void startThreads(String streamName) {
         executorServicePool = Executors.newFixedThreadPool(Constants.PRODUCER_THREAD_NUM);
-        executorServicePool.submit(new AppProducerThreadAsync(streamName, this.statistics, new RandomData()));
+        executorServicePool.submit(new AppKafkaProducerThread(streamName, scheduled.statistics, new RandomData()));
     }
 
     public static void main(String[] args) {
-        new AppProducerAsync().run(Constants.STREAM_NAME);
+        scheduled.run(Constants.STREAM_NAME);
     }
 }

@@ -1,12 +1,16 @@
 package com.bigdata.dis.sdk.demo.producer;
 
-import com.bigdata.dis.data.iface.request.PutRecordsRequest;
-import com.bigdata.dis.data.iface.response.PutRecordsResult;
-import com.bigdata.dis.sdk.DIS;
-import com.bigdata.dis.sdk.DISClient;
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.bigdata.dis.sdk.demo.data.IData;
+import com.cloud.sdk.util.StringUtils;
+import com.huaweicloud.dis.DIS;
+import com.huaweicloud.dis.DISClient;
+import com.huaweicloud.dis.http.exception.ResourceAccessException;
+import com.huaweicloud.dis.iface.data.iface.request.PutRecordsRequest;
+import com.huaweicloud.dis.iface.data.iface.response.PutRecordsResult;
+import com.huaweicloud.dis.iface.data.iface.response.PutRecordsResultEntry;
+import org.apache.http.NoHttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,7 +26,10 @@ class AppProducerThread extends Thread {
 
     private Statistics statistics;
 
-    public AppProducerThread(Statistics statistics, IData data) {
+    private String streamName;
+
+    public AppProducerThread(String streamName, Statistics statistics, IData data) {
+        this.streamName = streamName;
         this.statistics = statistics;
         this.data = data;
         dis = new DISClient(Constants.DIS_CONFIG);
@@ -30,22 +37,30 @@ class AppProducerThread extends Thread {
 
     @Override
     public void run() {
-        LOGGER.info("{} start.", getName());
+        LOGGER.info("{}_{} start.", getName(), this.streamName);
         try {
-            for (int loop = 0; loop < Constants.REQUEST_NUM; loop++) {
-                PutRecordsRequest putRecordsRequest = data.createRequest();
+            long requestNum = (long) Math.ceil(1.0 * Constants.PRODUCER_RECORD_NUM /
+                    Constants.PRODUCER_REQUEST_RECORD_NUM / Constants.PRODUCER_THREAD_NUM);
+            for (long loop = 0; loop < requestNum; loop++) {
+                PutRecordsRequest putRecordsRequest = data.createRequest(this.streamName);
                 statistics.totalRequestTimes.incrementAndGet();
                 statistics.totalSendRecords.addAndGet(putRecordsRequest.getRecords().size());
                 PutRecordsResult response = null;
                 long timeStart = System.currentTimeMillis();
                 try {
+                    response = null;
                     response = dis.putRecords(putRecordsRequest);
                     statistics.totalRequestSuccessTimes.incrementAndGet();
                     statistics.totalPostponeMillis.addAndGet(System.currentTimeMillis() - timeStart);
                 } catch (Exception e) {
-                    statistics.totalRequestFailedTimes.incrementAndGet();
-                    LOGGER.error("Failed put, cost " + (System.currentTimeMillis() - timeStart) + "ms. " + e.getMessage(), e);
-                    TimeUnit.MILLISECONDS.sleep(Constants.SERVER_FAILED_SLEEP_TIME);
+                    if (!(e instanceof ResourceAccessException && e.getCause() instanceof NoHttpResponseException)) {
+                        statistics.totalRequestFailedTimes.incrementAndGet();
+                        LOGGER.error("Failed put, cost " + (System.currentTimeMillis() - timeStart) + "ms. " + e.getMessage(), e);
+                        statistics.totalSendFailedRecords.addAndGet(putRecordsRequest.getRecords().size());
+                        TimeUnit.MILLISECONDS.sleep(Constants.SERVER_FAILED_SLEEP_TIME);
+                    } else {
+                        LOGGER.info(e.getMessage());
+                    }
                 }
 
                 if (response != null) {
@@ -55,14 +70,19 @@ class AppProducerThread extends Thread {
                     statistics.totalSendFailedRecords.addAndGet(failed);
                     LOGGER.debug("CurrentPut {} records[success {} / failed {}] spend {} ms.",
                             putRecordsRequest.getRecords().size(), success, failed, System.currentTimeMillis() - timeStart);
-                } else {
-                    statistics.totalSendFailedRecords.addAndGet(putRecordsRequest.getRecords().size());
+                    for (PutRecordsResultEntry putRecordsResultEntry : response.getRecords()) {
+                        if (!StringUtils.isNullOrEmpty(putRecordsResultEntry.getErrorCode())
+                                && !"DIS.4303".equals(putRecordsResultEntry.getErrorCode())) {
+                            LOGGER.error("Failed to put {}", putRecordsResultEntry);
+                        }
+                    }
                 }
 
-                TimeUnit.MILLISECONDS.sleep(Constants.SLEEP_TIME);
+                TimeUnit.MILLISECONDS.sleep(Constants.PRODUCER_REQUEST_SLEEP_TIME);
             }
         } catch (Exception e) {
             LOGGER.error(e.getMessage(), e);
         }
+        LOGGER.info("{}_{} stop.", getName(), this.streamName);
     }
 }

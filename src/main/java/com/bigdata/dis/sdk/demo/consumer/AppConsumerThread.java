@@ -1,18 +1,18 @@
 package com.bigdata.dis.sdk.demo.consumer;
 
-import com.bigdata.dis.data.iface.request.GetPartitionCursorRequest;
-import com.bigdata.dis.data.iface.request.GetRecordsRequest;
-import com.bigdata.dis.data.iface.response.GetPartitionCursorResult;
-import com.bigdata.dis.data.iface.response.GetRecordsResult;
-import com.bigdata.dis.data.iface.response.Record;
-import com.bigdata.dis.sdk.DIS;
-import com.bigdata.dis.sdk.DISClient;
 import com.bigdata.dis.sdk.demo.common.Constants;
-import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.bigdata.dis.sdk.demo.common.Public;
-import com.bigdata.dis.stream.iface.request.DescribeStreamRequest;
-import com.bigdata.dis.stream.iface.response.DescribeStreamResult;
-import com.bigdata.dis.stream.iface.response.PartitionResult;
+import com.bigdata.dis.sdk.demo.common.Statistics;
+import com.huaweicloud.dis.DIS;
+import com.huaweicloud.dis.DISClient;
+import com.huaweicloud.dis.iface.data.iface.request.GetPartitionCursorRequest;
+import com.huaweicloud.dis.iface.data.iface.request.GetRecordsRequest;
+import com.huaweicloud.dis.iface.data.iface.response.GetPartitionCursorResult;
+import com.huaweicloud.dis.iface.data.iface.response.GetRecordsResult;
+import com.huaweicloud.dis.iface.data.iface.response.Record;
+import com.huaweicloud.dis.iface.stream.iface.request.DescribeStreamRequest;
+import com.huaweicloud.dis.iface.stream.iface.response.DescribeStreamResult;
+import com.huaweicloud.dis.iface.stream.iface.response.PartitionResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,15 +36,18 @@ class AppConsumerThread extends Thread {
 
     private Statistics statistics;
 
-    public AppConsumerThread(Statistics statistics) {
+    private final String streamName;
+
+    public AppConsumerThread(String streamName, Statistics statistics) {
+        this.streamName = streamName;
         this.statistics = statistics;
         dis = new DISClient(Constants.DIS_CONFIG);
     }
 
     public void initPartition() {
-        if ("auto".equals(Constants.PARTITION_NUM)) {
+        if ("auto".equals(Constants.CONSUMER_PARTITION_NUM)) {
             DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest();
-            describeStreamRequest.setStreamName(Constants.STREAM_NAME);
+            describeStreamRequest.setStreamName(this.streamName);
             describeStreamRequest.setLimitPartitions(100);
             DescribeStreamResult describeStreamResult = null;
             List<PartitionResult> partitions = new ArrayList<>();
@@ -58,10 +61,10 @@ class AppConsumerThread extends Thread {
             while (describeStreamResult.getHasMorePartitions());
             this.partitionSize = partitions.size();
         } else {
-            this.partitionSize = Integer.valueOf(Constants.PARTITION_NUM);
+            this.partitionSize = Integer.valueOf(Constants.CONSUMER_PARTITION_NUM);
         }
 
-        LOGGER.info("Stream {} has {} partitions.", Constants.STREAM_NAME, partitionSize);
+        LOGGER.info("Stream {} has {} partitions.", this.streamName, partitionSize);
     }
 
     @Override
@@ -76,9 +79,10 @@ class AppConsumerThread extends Thread {
 
                     @Override
                     public void run() {
+                        LOGGER.info("{}_{}_{} start.", getName(), streamName, partitionNum);
                         try {
                             GetPartitionCursorRequest request = new GetPartitionCursorRequest();
-                            request.setStreamName(Constants.STREAM_NAME);
+                            request.setStreamName(streamName);
                             request.setPartitionId(String.valueOf(partitionNum));
                             request.setCursorType(Constants.CONSUMER_CURSOR_TYPE.toString());
                             request.setStartingSequenceNumber(String.valueOf(Constants.CONSUMER_OFFSET));
@@ -111,13 +115,14 @@ class AppConsumerThread extends Thread {
                                     }
                                 }
 
-                                TimeUnit.MILLISECONDS.sleep(Constants.SLEEP_TIME);
+                                TimeUnit.MILLISECONDS.sleep(Constants.CONSUMER_REQUEST_SLEEP_TIME);
                             }
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
                         } finally {
                             countDownLatch.countDown();
                         }
+                        LOGGER.info("{}_{}_{} stop.", getName(), streamName, partitionNum);
                     }
                 }).start();
             }

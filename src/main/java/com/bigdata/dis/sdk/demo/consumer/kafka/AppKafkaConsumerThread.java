@@ -1,20 +1,9 @@
 package com.bigdata.dis.sdk.demo.consumer.kafka;
 
-import com.bigdata.dis.data.iface.request.GetPartitionCursorRequest;
-import com.bigdata.dis.data.iface.request.GetRecordsRequest;
-import com.bigdata.dis.data.iface.response.GetPartitionCursorResult;
-import com.bigdata.dis.data.iface.response.GetRecordsResult;
-import com.bigdata.dis.data.iface.response.Record;
-import com.bigdata.dis.sdk.DIS;
-import com.bigdata.dis.sdk.DISClient;
 import com.bigdata.dis.sdk.adapter.kafka.consumer.DISKafkaConsumer;
 import com.bigdata.dis.sdk.demo.common.Constants;
-import com.bigdata.dis.sdk.demo.common.Public;
 import com.bigdata.dis.sdk.demo.common.Statistics;
-import com.bigdata.dis.sdk.util.PartitionCursorTypeEnum;
-import com.bigdata.dis.stream.iface.request.DescribeStreamRequest;
-import com.bigdata.dis.stream.iface.response.DescribeStreamResult;
-import com.bigdata.dis.stream.iface.response.PartitionResult;
+import com.huaweicloud.dis.util.PartitionCursorTypeEnum;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
@@ -23,9 +12,8 @@ import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 class AppKafkaConsumerThread extends Thread {
@@ -36,23 +24,24 @@ class AppKafkaConsumerThread extends Thread {
 
     private int partitionSize = 0;
 
-    private Map<Integer, String> iteratorMap = new ConcurrentHashMap<>();
-
     private Statistics statistics;
 
-    public AppKafkaConsumerThread(Statistics statistics) {
+    private String streamName;
+
+    public AppKafkaConsumerThread(String streamName, Statistics statistics) {
+        this.streamName = streamName;
         this.statistics = statistics;
-        consumer = new DISKafkaConsumer<String, String>(Constants.DIS_CONFIG);
+        consumer = new DISKafkaConsumer<>(Constants.DIS_CONFIG);
     }
 
     public void initPartition() {
-        if ("auto".equals(Constants.PARTITION_NUM)) {
-            List<PartitionInfo> partitionInfos = consumer.partitionsFor(Constants.STREAM_NAME);
+        if ("auto".equals(Constants.CONSUMER_PARTITION_NUM)) {
+            List<PartitionInfo> partitionInfos = consumer.partitionsFor(this.streamName);
             this.partitionSize = partitionInfos.size();
         } else {
-            this.partitionSize = Integer.valueOf(Constants.PARTITION_NUM);
+            this.partitionSize = Integer.valueOf(Constants.CONSUMER_PARTITION_NUM);
         }
-        LOGGER.info("Stream {} has {} partitions.", Constants.STREAM_NAME, partitionSize);
+        LOGGER.info("Stream {} has {} partitions.", this.streamName, partitionSize);
     }
 
     @Override
@@ -60,7 +49,7 @@ class AppKafkaConsumerThread extends Thread {
         initPartition();
         List<TopicPartition> topicPartitions = new ArrayList<>();
         for (int i = 0; i < partitionSize; i++) {
-            topicPartitions.add(new TopicPartition(Constants.STREAM_NAME, i));
+            topicPartitions.add(new TopicPartition(this.streamName, i));
         }
         consumer.assign(topicPartitions);
         if (PartitionCursorTypeEnum.TRIM_HORIZON == Constants.CONSUMER_CURSOR_TYPE) {
@@ -86,7 +75,7 @@ class AppKafkaConsumerThread extends Thread {
                 if (LOGGER.isDebugEnabled()) {
                     outputData(consumerRecords);
                 }
-                TimeUnit.MILLISECONDS.sleep(Constants.SLEEP_TIME);
+                TimeUnit.MILLISECONDS.sleep(Constants.CONSUMER_REQUEST_SLEEP_TIME);
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);
                 statistics.totalRequestFailedTimes.incrementAndGet();

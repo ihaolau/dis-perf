@@ -11,14 +11,13 @@ import java.util.concurrent.Executors;
 public class AppProducerBatch extends Scheduled {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppProducerBatch.class);
 
-    private static Scheduled scheduled = new AppProducerBatch();
-
-    public void startThreads() {
-        executorServicePool = Executors.newFixedThreadPool(Constants.THREAD_NUM);
-        executorServicePool.submit(new AppProducerThreadBatch(scheduled.statistics, new RandomData()));
+    public void startThreads(String streamName) {
+        executorServicePool = Executors.newFixedThreadPool(Constants.PRODUCER_THREAD_NUM);
+        executorServicePool.submit(new AppProducerThreadBatch(streamName, this.statistics, new RandomData()));
     }
 
     public static void main(String[] args) {
-        scheduled.run();
+        new AppProducerBatch().run(Constants.STREAM_NAME);
     }
+
 }

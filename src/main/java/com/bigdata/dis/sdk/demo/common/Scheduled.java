@@ -9,13 +9,13 @@ import java.util.concurrent.TimeUnit;
 
 public abstract class Scheduled {
     private static final Logger LOGGER = LoggerFactory.getLogger(Scheduled.class);
-    public ExecutorService executorServicePool = Executors.newFixedThreadPool(Constants.THREAD_NUM);
+    public ExecutorService executorServicePool = Executors.newFixedThreadPool(Constants.PRODUCER_THREAD_NUM);
     public Statistics statistics = new Statistics();
 
-    public abstract void startThreads();
+    public abstract void startThreads(String streamName);
 
-    public void run() {
-        startThreads();
+    public void run(String streamName) {
+        startThreads(streamName);
         statistics.start();
         waitShutdown();
     }
