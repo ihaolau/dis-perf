@@ -17,8 +17,8 @@ To get started using dis perf, you will need those things:
 
 ```
 In dir dis_jar, you can run dis_sdk_maven_install.bat or dis_sdk_maven_install.sh to install
-dis-data-iface-1.2.3.jar/dis-sdk-1.2.3.jar/java-sdk-core-2.0.1.jar
-to you maven repository
+huaweicloud-sdk-java-dis/huaweicloud-sdk-java-dis-iface/dis-kafka-adapter/java-sdk-core
+to you local maven repository
 ```
 2. use  maven command to package, and you will get dis-perf-1.0.0.zip in directory  `target`
 
@@ -26,11 +26,9 @@ to you maven repository
 mvn clean package
 ```
 
-### Running DIS Perf
-1. Unzip dis-perf-1.0.0.zip on Linux
-```
-unzip dis-perf-1.0.0.zip
-```
+### Running DIS Perf with IDE
+1. Copy `src\main\resources\dis.properties.templeate` to `src\main\resources\dis.properties`
+
 2. Config dis.properties
 
 
@@ -43,16 +41,36 @@ unzip dis-perf-1.0.0.zip
 | endpoint    | DIS gateway address                      | https://dis.cn-north-1.myhwclouds.com:20004 |
 | stream_name | You stream name which created in DIS     |                                          |
 
+
+3. Start Producer, just Run `com.bigdata.dis.sdk.demo.producer.AppProducer`
+
+4. Start Consumer, just Run `com.bigdata.dis.sdk.demo.consumer.AppConsumer`
+
+### Running DIS Perf with package
+1. Unzip dis-perf-1.0.0.zip on Linux or Windows
+```
+unzip dis-perf-1.0.0.zip
+
+or use winrar on Windows
+```
+2. Config dis.properties
+
+   See **Running DIS Perf with IDE -> Config dis.properties**
+
 3. Start Producer
 
 ```
-sh bin/start_producer.sh
+sh bin/bash/start_producer.sh
+
+or enter "bin" directory,and double click start_producer.bat on Windows
 ```
 
 4. Start Consumer
 
 ```
 sh bin/start_consumer.sh
+
+or enter "bin" directory,and double click start_consumer.bat on Windows
 ```
 
 ### Stopping DIS perf
