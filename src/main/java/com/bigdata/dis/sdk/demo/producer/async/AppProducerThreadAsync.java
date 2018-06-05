@@ -6,8 +6,8 @@ import com.bigdata.dis.sdk.demo.data.IData;
 import com.huaweicloud.dis.DISAsync;
 import com.huaweicloud.dis.DISClientAsync;
 import com.huaweicloud.dis.core.handler.AsyncHandler;
-import com.huaweicloud.dis.iface.data.iface.request.PutRecordsRequest;
-import com.huaweicloud.dis.iface.data.iface.response.PutRecordsResult;
+import com.huaweicloud.dis.iface.data.request.PutRecordsRequest;
+import com.huaweicloud.dis.iface.data.response.PutRecordsResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

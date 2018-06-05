@@ -1,13 +1,13 @@
 @echo off
+set sdk_version=1.3.0-SNAPSHOT
 
-set sdk_version=1.3.0
-set kafka_sdk_version=1.0.4
-call mvn install:install-file -Dfile="dis-sdk-%sdk_version%.jar" -DgroupId=com.bigdata.dis -DartifactId=dis-sdk -Dversion=%sdk_version% -Dpackaging=jar -DpomFile="./dis-sdk-%sdk_version%.pom"
+call mvn install:install-file -Dfile=huaweicloud-sdk-java-dis-pom-%sdk_version%.pom -DgroupId=com.huaweicloud.dis -DartifactId=huaweicloud-sdk-java-dis-pom -Dversion=%sdk_version% -Dpackaging=pom
 
-call mvn install:install-file -Dfile="dis-data-iface-%sdk_version%.jar" -DgroupId=com.bigdata.dis -DartifactId=dis-data-iface -Dversion=%sdk_version% -Dpackaging=jar -DpomFile="./dis-data-iface-%sdk_version%.pom"
+call mvn install:install-file -Dfile=huaweicloud-sdk-java-dis-%sdk_version%.jar -DgroupId=com.huaweicloud.dis -DartifactId=huaweicloud-sdk-java-dis -Dversion=%sdk_version% -Dpackaging=jar -DpomFile=huaweicloud-sdk-java-dis-%sdk_version%.pom
 
-call mvn install:install-file -Dfile="dis-kafka-adapter-%kafka_sdk_version%.jar" -DgroupId=com.bigdata.dis -DartifactId=dis-kafka-adapter -Dversion=%kafka_sdk_version% -Dpackaging=jar -DpomFile="./dis-kafka-adapter-%kafka_sdk_version%.pom"
+call mvn install:install-file -Dfile=huaweicloud-sdk-java-dis-iface-%sdk_version%.jar -DgroupId=com.huaweicloud.dis -DartifactId=huaweicloud-sdk-java-dis-iface -Dversion=%sdk_version% -Dpackaging=jar -DpomFile=huaweicloud-sdk-java-dis-iface-%sdk_version%.pom
 
-call mvn install:install-file -Dfile="java-sdk-core-2.0.1.jar" -DgroupId=com.huawei.apigateway -DartifactId=java-sdk-core -Dversion=2.0.1 -Dpackaging=jar
+call mvn install:install-file -Dfile=java-sdk-core-2.0.1.jar -DgroupId=com.huawei.apigateway -DartifactId=java-sdk-core -Dversion=2.0.1 -Dpackaging=jar
 
+call mvn install:install-file -Dfile=dis-kafka-adapter-1.0.4.jar -DgroupId=com.bigdata.dis -DartifactId=dis-kafka-adapter -Dversion=1.0.4 -Dpackaging=jar -DpomFile=dis-kafka-adapter-1.0.4.pom
 pause

@@ -2,8 +2,8 @@ package com.bigdata.dis.sdk.demo.manager;
 
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.huaweicloud.dis.DISClient;
-import com.huaweicloud.dis.iface.stream.iface.request.DeleteStreamRequest;
-import com.huaweicloud.dis.iface.stream.iface.response.DeleteStreamResult;
+import com.huaweicloud.dis.iface.stream.request.DeleteStreamRequest;
+import com.huaweicloud.dis.iface.stream.response.DeleteStreamResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

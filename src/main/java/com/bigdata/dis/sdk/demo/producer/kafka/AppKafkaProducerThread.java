@@ -4,8 +4,8 @@ import com.bigdata.dis.sdk.adapter.kafka.producer.DISKafkaProducer;
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.bigdata.dis.sdk.demo.data.IData;
-import com.huaweicloud.dis.iface.data.iface.request.PutRecordsRequest;
-import com.huaweicloud.dis.iface.data.iface.request.PutRecordsRequestEntry;
+import com.huaweicloud.dis.iface.data.request.PutRecordsRequest;
+import com.huaweicloud.dis.iface.data.request.PutRecordsRequestEntry;
 import org.apache.kafka.clients.producer.Callback;
 import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -70,7 +70,7 @@ class AppKafkaProducerThread extends Thread {
                             }
                         }
                     });
-                    // 减缓发送速度
+
                     TimeUnit.MILLISECONDS.sleep(1);
                 } catch (Exception e) {
                     countDownLatch.countDown();

@@ -1,8 +1,16 @@
-region=cn-south-1
+################
+# 注意：请将此文件重命名为 dis.properties 之后再修改，否则运行时读取不到此文件
+#
+# DIS区域信息
+# 华北-北京1： region=cn-north-1, endpoint=https://dis.cn-north-1.myhwclouds.com:20004
+# 华南-广州 ： region=cn-south-1, endpoint=https://dis.cn-south-1.myhwclouds.com
+################
+
+region=cn-north-1
 ak=
 sk=
 projectId=
-endpoint=https://139.159.241.13:443
+endpoint=https://dis.cn-north-1.myhwclouds.com:20004
 # 通道名称
 stream_name=dis-long-test
 
@@ -48,3 +56,5 @@ auto_run_user_name=dis
 records.retries=8
 #backoff.max.interval.ms=10000
 #exception.retries=3
+# 模拟数据时间戳(mock;now)
+data.timestamp=now

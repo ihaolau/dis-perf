@@ -5,9 +5,9 @@ import com.bigdata.dis.sdk.demo.manager.type.DataType;
 import com.cloud.sdk.util.StringUtils;
 import com.huaweicloud.dis.DISClient;
 import com.huaweicloud.dis.exception.DISClientException;
-import com.huaweicloud.dis.iface.stream.iface.request.CreateStreamRequest;
-import com.huaweicloud.dis.iface.stream.iface.request.OBSDestinationDescriptorRequest;
-import com.huaweicloud.dis.iface.stream.iface.response.CreateStreamResult;
+import com.huaweicloud.dis.iface.stream.request.CreateStreamRequest;
+import com.huaweicloud.dis.iface.stream.request.OBSDestinationDescriptorRequest;
+import com.huaweicloud.dis.iface.stream.response.CreateStreamResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

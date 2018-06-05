@@ -25,7 +25,7 @@
         <logger name="org.apache.http.headers" level="INFO"/>
         <logger name="com.huaweicloud.dis.DISConfig" level="WARN"/>
         <logger name="com.huaweicloud.dis.util.config.ConfigurationUtils" level="WARN"/>
-        <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="INFO"/>
+        <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="DEBUG"/>
         <logger name="com.bigdata.dis.sdk.demo.consumer.kafka.AppKafkaConsumerThread" level="INFO"/>
 
     </Loggers>

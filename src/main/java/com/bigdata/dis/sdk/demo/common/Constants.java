@@ -1,7 +1,7 @@
 package com.bigdata.dis.sdk.demo.common;
 
 import com.huaweicloud.dis.DISConfig;
-import com.huaweicloud.dis.iface.data.iface.request.StreamType;
+import com.huaweicloud.dis.iface.data.request.StreamType;
 import com.huaweicloud.dis.util.PartitionCursorTypeEnum;
 
 public class Constants {
@@ -11,13 +11,13 @@ public class Constants {
     public static final String CONFIG_STREAM_NAME = "stream_name";
     public static final String STREAM_NAME = DIS_CONFIG.get("stream_name", null);
 
-    public static final long PRODUCER_RECORD_NUM = (DIS_CONFIG.get("producer_record_num") == null
+    public static final long PRODUCER_RECORD_NUM = (DIS_CONFIG.get("producer_record_num", null) == null
             || DIS_CONFIG.getInt("producer_record_num", -1) < 0) ?
-            Long.MAX_VALUE : Long.valueOf(DIS_CONFIG.get("producer_record_num").toString());
+            Long.MAX_VALUE : Long.valueOf(DIS_CONFIG.get("producer_record_num", null).toString());
     public static final int PRODUCER_RECORD_LENGTH = DIS_CONFIG.getInt("producer_record_length", 1);
     public static final int PRODUCER_THREAD_NUM = DIS_CONFIG.getInt("producer_thread_num", 1);
     public static final int PRODUCER_REQUEST_RECORD_NUM = DIS_CONFIG.getInt("producer_request_record_num", 1);
-
+    public static final String PRODUCER_RECORD_DATA = DIS_CONFIG.get("producer_record_data", null);
     // -2 for earliest; -1 for latest
     public static final int CONSUMER_OFFSET = DIS_CONFIG.getInt("consumer_offset", -1);
     public static final PartitionCursorTypeEnum CONSUMER_CURSOR_TYPE =
