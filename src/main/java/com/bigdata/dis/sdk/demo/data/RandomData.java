@@ -14,7 +14,6 @@ public class RandomData implements IData {
 
     private List<ByteBuffer> datas = new ArrayList<>(Constants.PRODUCER_REQUEST_RECORD_NUM);
 
-    private ByteBuffer data = ByteBuffer.wrap(Constants.PRODUCER_RECORD_DATA.getBytes());
     public RandomData() {
         for (int i = 0; i < Constants.PRODUCER_REQUEST_RECORD_NUM; i++) {
             datas.add(ByteBuffer.wrap(RandomStringUtils.randomAlphanumeric(Constants.PRODUCER_RECORD_LENGTH).getBytes()));
@@ -28,7 +27,7 @@ public class RandomData implements IData {
         List<PutRecordsRequestEntry> putRecordsRequestEntryList = new ArrayList<>(Constants.PRODUCER_REQUEST_RECORD_NUM);
         for (int i = 0; i < Constants.PRODUCER_REQUEST_RECORD_NUM; i++) {
             PutRecordsRequestEntry putRecordsRequestEntry = new PutRecordsRequestEntry();
-            putRecordsRequestEntry.setData(data);
+            putRecordsRequestEntry.setData(datas.get(i));
             putRecordsRequestEntry.setPartitionKey(Public.randomKey());
             putRecordsRequestEntryList.add(putRecordsRequestEntry);
         }

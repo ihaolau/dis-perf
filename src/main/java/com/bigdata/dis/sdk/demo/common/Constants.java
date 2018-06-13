@@ -17,7 +17,6 @@ public class Constants {
     public static final int PRODUCER_RECORD_LENGTH = DIS_CONFIG.getInt("producer_record_length", 1);
     public static final int PRODUCER_THREAD_NUM = DIS_CONFIG.getInt("producer_thread_num", 1);
     public static final int PRODUCER_REQUEST_RECORD_NUM = DIS_CONFIG.getInt("producer_request_record_num", 1);
-    public static final String PRODUCER_RECORD_DATA = DIS_CONFIG.get("producer_record_data", null);
     // -2 for earliest; -1 for latest
     public static final int CONSUMER_OFFSET = DIS_CONFIG.getInt("consumer_offset", -1);
     public static final PartitionCursorTypeEnum CONSUMER_CURSOR_TYPE =
