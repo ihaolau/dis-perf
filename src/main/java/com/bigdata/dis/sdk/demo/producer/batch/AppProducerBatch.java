@@ -13,7 +13,7 @@ public class AppProducerBatch extends Scheduled {
 
     public void startThreads(String streamName) {
         executorServicePool = Executors.newFixedThreadPool(Constants.PRODUCER_THREAD_NUM);
-        executorServicePool.submit(new AppProducerThreadBatch(streamName, this.statistics, new RandomData()));
+        executorServicePool.submit(new AppProducerThreadBatch(streamName, this.statistics, Constants.PRODUCER_DATA_FACTORY));
     }
 
     public static void main(String[] args) {

@@ -3,9 +3,9 @@ package com.bigdata.dis.sdk.demo.producer;
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.bigdata.dis.sdk.demo.data.IData;
-import com.cloud.sdk.util.StringUtils;
 import com.huaweicloud.dis.DIS;
 import com.huaweicloud.dis.DISClient;
+import com.huaweicloud.dis.core.util.StringUtils;
 import com.huaweicloud.dis.http.exception.ResourceAccessException;
 import com.huaweicloud.dis.iface.data.request.PutRecordsRequest;
 import com.huaweicloud.dis.iface.data.response.PutRecordsResult;
@@ -81,7 +81,9 @@ class AppProducerThread extends Thread {
                 TimeUnit.MILLISECONDS.sleep(Constants.PRODUCER_REQUEST_SLEEP_TIME);
             }
         } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
+            if (!(e instanceof InterruptedException)) {
+                LOGGER.error(e.getMessage(), e);
+            }
         }
         LOGGER.info("{}_{} stop.", getName(), this.streamName);
     }

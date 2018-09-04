@@ -2,8 +2,8 @@ package com.bigdata.dis.sdk.demo.manager;
 
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.manager.type.DataType;
-import com.cloud.sdk.util.StringUtils;
 import com.huaweicloud.dis.DISClient;
+import com.huaweicloud.dis.core.util.StringUtils;
 import com.huaweicloud.dis.exception.DISClientException;
 import com.huaweicloud.dis.iface.stream.request.CreateStreamRequest;
 import com.huaweicloud.dis.iface.stream.request.OBSDestinationDescriptorRequest;

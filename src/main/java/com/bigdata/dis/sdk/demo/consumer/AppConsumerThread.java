@@ -84,6 +84,9 @@ class AppConsumerThread extends Thread {
                             GetPartitionCursorRequest request = new GetPartitionCursorRequest();
                             request.setStreamName(streamName);
                             request.setPartitionId(String.valueOf(partitionNum));
+//                            request.setCursorType("AT_TIMESTAMP");
+//                            long timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse("2018-08-02 21:46:41").getTime();
+//                            request.setTimestamp(timestamp);
                             request.setCursorType(Constants.CONSUMER_CURSOR_TYPE.toString());
                             request.setStartingSequenceNumber(String.valueOf(Constants.CONSUMER_OFFSET));
                             GetPartitionCursorResult partitionCursor = dis.getPartitionCursor(request);
@@ -142,8 +145,8 @@ class AppConsumerThread extends Thread {
             String content = new String(record.getData().array());
             String sequenceNumber = record.getSequenceNumber();
             Long timestamp = record.getTimestamp();
-            LOGGER.debug("Partition [{}], Content [{}], sequenceNumber [{}], timestamp [{}]",
-                    partitionNum, content, sequenceNumber, Public.DATE_FORMATE.format(new Date(timestamp)));
+            LOGGER.debug("Partition [{}], Content [{}], partitionKey [{}], sequenceNumber [{}], timestamp [{}]",
+                    partitionNum, content, record.getPartitionKey(), sequenceNumber, Public.DATE_FORMATE.format(new Date(timestamp)));
         }
     }
 }

@@ -21,12 +21,19 @@
         </Root>
 
         <logger name="org.springframework" level="INFO"/>
-        <logger name="org.apache.http" level="INFO"/>
-        <logger name="org.apache.http.headers" level="INFO"/>
+        <logger name="org.apache.http" level="ERROR"/>
+        <logger name="org.apache.http.headers" level="ERROR"/>
         <logger name="com.huaweicloud.dis.DISConfig" level="WARN"/>
         <logger name="com.huaweicloud.dis.util.config.ConfigurationUtils" level="WARN"/>
+
+        <!-- DEBUG 表示显示MQTT上传的内容 -->
+        <logger name="com.bigdata.dis.sdk.demo.producer.mqtt.MQTTClient" level="INFO"/>
+        <!-- DEBUG 表示显示消费的记录内容 -->
         <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="DEBUG"/>
+        <!-- DEBUG 表示显示Kafka消费的记录内容 -->
         <logger name="com.bigdata.dis.sdk.demo.consumer.kafka.AppKafkaConsumerThread" level="INFO"/>
+        <!-- WARN 表示关闭统计信息打印 -->
+        <logger name="com.bigdata.dis.sdk.demo.common.Statistics" level="INFO"/>
 
     </Loggers>
 </Configuration>

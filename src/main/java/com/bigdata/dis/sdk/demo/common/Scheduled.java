@@ -15,8 +15,24 @@ public abstract class Scheduled {
     public abstract void startThreads(String streamName);
 
     public void run(String streamName) {
-        startThreads(streamName);
-        statistics.start();
+        try {
+            startThreads(streamName);
+            statistics.start();
+            Runtime.getRuntime().addShutdownHook(new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    executorServicePool.shutdownNow();
+                    try {
+                        Thread.sleep(1500);
+                    } catch (InterruptedException e) {
+                        LOGGER.error(e.getMessage(), e);
+                    }
+                    statistics.stop();
+                }
+            }));
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
         waitShutdown();
     }
 
@@ -24,8 +40,6 @@ public abstract class Scheduled {
         try {
             executorServicePool.shutdown();
             executorServicePool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
-            Thread.sleep(1500);
-            statistics.stop();
         } catch (InterruptedException e) {
             LOGGER.error(e.getMessage(), e);
         }

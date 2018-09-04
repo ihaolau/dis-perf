@@ -56,7 +56,7 @@ class AppKafkaProducerThread extends Thread {
 
             for (PutRecordsRequestEntry putRecordsRequestEntry : putRecordsRequest.getRecords()) {
                 ProducerRecord<String, byte[]> producerRecord =
-                        new ProducerRecord<>(this.streamName, putRecordsRequestEntry.getPartitionKey(),
+                        new ProducerRecord<>(this.streamName,
                                 putRecordsRequestEntry.getData().array());
                 try {
                     producer.send(producerRecord, new Callback() {

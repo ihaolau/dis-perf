@@ -2,15 +2,15 @@
 # 注意：请将此文件重命名为 dis.properties 之后再修改，否则运行时读取不到此文件
 #
 # DIS区域信息
-# 华北-北京1： region=cn-north-1, endpoint=https://dis.cn-north-1.myhwclouds.com:20004
-# 华南-广州 ： region=cn-south-1, endpoint=https://dis.cn-south-1.myhwclouds.com
+# 华北-北京1： region=cn-north-1, endpoint=https://dis.cn-north-1.myhuaweicloud.com:20004
+# 华南-广州 ： region=cn-south-1, endpoint=https://dis.cn-south-1.myhuaweicloud.com
 ################
 
 region=cn-north-1
 ak=
 sk=
 projectId=
-endpoint=https://dis.cn-north-1.myhwclouds.com:20004
+endpoint=https://dis.cn-north-1.myhuaweicloud.com:20004
 # 通道名称
 stream_name=dis-long-test
 
@@ -25,7 +25,10 @@ producer_thread_num=10
 producer_request_record_num=200
 # 每次请求的Sleep间隔(ms)
 producer_request_sleep_time=0
-
+# 生产者数据构造类
+producer_data_factory=com.bigdata.dis.sdk.demo.data.RandomData
+# body体序列化格式
+producer_body_serialize_type=protobuf
 
 # 消费端开始消费的起始位置(-2: 从最旧开始消费; -1: 从最新开始消费; 自然数N(N>=0): 从指定位置开始消费)
 consumer_offset=-1
@@ -53,8 +56,12 @@ auto_run_num=-1
 auto_run_user_name=dis
 
 
-records.retries=8
-#backoff.max.interval.ms=10000
+#records.retries=8
 #exception.retries=3
 # 模拟数据时间戳(mock;now)
 data.timestamp=now
+
+#mqtt_broker=tcp://49.4.52.253:8964
+mqtt_broker=ssl://49.4.52.253:8965
+#mqtt_client_id=client01
+#mqtt_security_mode=2

@@ -2,8 +2,6 @@ package com.bigdata.dis.sdk.demo.producer;
 
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Scheduled;
-import com.bigdata.dis.sdk.demo.data.RandomData;
-import com.bigdata.dis.sdk.demo.data.custom.hr.HRData;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,7 +13,7 @@ public class AppProducer extends Scheduled {
     public void startThreads(String streamName) {
         executorServicePool = Executors.newFixedThreadPool(Constants.PRODUCER_THREAD_NUM);
         for (int threadIndex = 0; threadIndex < Constants.PRODUCER_THREAD_NUM; threadIndex++) {
-            executorServicePool.submit(new AppProducerThread(streamName, this.statistics, new RandomData()));
+            executorServicePool.submit(new AppProducerThread(streamName, this.statistics, Constants.PRODUCER_DATA_FACTORY));
         }
     }
 

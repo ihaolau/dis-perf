@@ -1,8 +1,11 @@
 package com.bigdata.dis.sdk.demo.common;
 
+import com.bigdata.dis.sdk.demo.data.IData;
+import com.bigdata.dis.sdk.demo.data.RandomData;
 import com.huaweicloud.dis.DISConfig;
 import com.huaweicloud.dis.iface.data.request.StreamType;
 import com.huaweicloud.dis.util.PartitionCursorTypeEnum;
+import org.apache.commons.lang3.RandomStringUtils;
 
 public class Constants {
 
@@ -17,6 +20,18 @@ public class Constants {
     public static final int PRODUCER_RECORD_LENGTH = DIS_CONFIG.getInt("producer_record_length", 1);
     public static final int PRODUCER_THREAD_NUM = DIS_CONFIG.getInt("producer_thread_num", 1);
     public static final int PRODUCER_REQUEST_RECORD_NUM = DIS_CONFIG.getInt("producer_request_record_num", 1);
+
+    public static final IData PRODUCER_DATA_FACTORY;
+
+    static {
+        DIS_CONFIG.put(DISConfig.PROPERTY_BODY_SERIALIZE_TYPE, DIS_CONFIG.get("producer_body_serialize_type", "json"));
+        try {
+            PRODUCER_DATA_FACTORY = (IData) Class.forName(DIS_CONFIG.get("producer_data_factory", RandomData.class.getName())).newInstance();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     // -2 for earliest; -1 for latest
     public static final int CONSUMER_OFFSET = DIS_CONFIG.getInt("consumer_offset", -1);
     public static final PartitionCursorTypeEnum CONSUMER_CURSOR_TYPE =
@@ -42,4 +57,14 @@ public class Constants {
 
     public static final long AUTO_RUN_NUM = DIS_CONFIG.getInt("auto_run_num", 5);
     public static final String AUTO_RUN_USER_NAME = DIS_CONFIG.get("auto_run_user_name", "dis");
+
+    public static final String APP_NAME = DIS_CONFIG.get("app_name", null);
+
+    public static final int NUM = DIS_CONFIG.getInt("num", 0);
+
+    public static final String MQTT_INSTANCE_NAME = DIS_CONFIG.get("mqtt_instance_name", "instance1");
+    public static final String MQTT_CLIENT_ID = DIS_CONFIG.get("mqtt_client_id", RandomStringUtils.randomAlphanumeric(10));
+    public static final String MQTT_BROKER = DIS_CONFIG.get("mqtt_broker", "tcp://49.4.52.253:8964");
+    public static final int MQTT_QOS = DIS_CONFIG.getInt("mqtt_qos", 1);
+    public static final int MQTT_SECURITY_MODE = DIS_CONFIG.getInt("mqtt_security_mode", 2);
 }

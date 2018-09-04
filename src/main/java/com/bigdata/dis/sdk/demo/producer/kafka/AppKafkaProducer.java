@@ -15,7 +15,7 @@ public class AppKafkaProducer extends Scheduled {
 
     public void startThreads(String streamName) {
         executorServicePool = Executors.newFixedThreadPool(Constants.PRODUCER_THREAD_NUM);
-        executorServicePool.submit(new AppKafkaProducerThread(streamName, scheduled.statistics, new RandomData()));
+        executorServicePool.submit(new AppKafkaProducerThread(streamName, scheduled.statistics, Constants.PRODUCER_DATA_FACTORY));
     }
 
     public static void main(String[] args) {

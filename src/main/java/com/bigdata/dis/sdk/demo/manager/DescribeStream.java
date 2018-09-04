@@ -40,11 +40,13 @@ public class DescribeStream {
         while (describeStreamResult.getHasMorePartitions());
 
         long total = 0;
+        LOGGER.info("StreamType {}, RetentionPeriod {}.", describeStreamResult.getStreamType(), describeStreamResult.getRetentionPeriod());
         for (PartitionResult partition : partitions) {
             String last = partition.getSequenceNumberRange().split(":")[1].trim();
             total += Long.valueOf(last.substring(0, last.length() - 1));
-            LOGGER.info("PartitionId='{}', seqRange='{}', hashRange='{}'",
-                    partition.getPartitionId(), partition.getSequenceNumberRange(), partition.getHashRange());
+            LOGGER.info("PartitionId='{}', SequenceNumberRange='{}', Status='{}', HashRange='{}'",
+                    partition.getPartitionId(), partition.getSequenceNumberRange(),
+                    partition.getStatus(), partition.getHashRange());
         }
         LOGGER.info("Success to describe stream {}, total records {}, cost {}ms",
                 describeStreamRequest.getStreamName(), total, (System.currentTimeMillis() - start));
