@@ -40,6 +40,8 @@ public abstract class Scheduled {
         try {
             executorServicePool.shutdown();
             executorServicePool.awaitTermination(Long.MAX_VALUE, TimeUnit.DAYS);
+            Thread.sleep(1500);
+            statistics.stop();
         } catch (InterruptedException e) {
             LOGGER.error(e.getMessage(), e);
         }

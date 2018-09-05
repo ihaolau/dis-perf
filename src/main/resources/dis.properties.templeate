@@ -16,17 +16,17 @@ stream_name=dis-long-test
 
 
 # 总共发送的消息条数(-1代表无限制)
-producer_record_num=100000
+producer_record_num=-1
 # 每条消息的长度(B)
 producer_record_length=1024
 # 发送的线程数
-producer_thread_num=10
+producer_thread_num=48
 # 每次发送请求包含的消息条数
-producer_request_record_num=200
+producer_request_record_num=300
 # 每次请求的Sleep间隔(ms)
 producer_request_sleep_time=0
 # 生产者数据构造类
-producer_data_factory=com.bigdata.dis.sdk.demo.data.RandomData
+producer_data_factory=com.bigdata.dis.sdk.demo.data.custom.p.ParseEmail
 # body体序列化格式
 producer_body_serialize_type=protobuf
 

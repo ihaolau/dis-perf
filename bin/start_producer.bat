@@ -13,8 +13,8 @@ cd ..
 set MAIN_CLASS=com.bigdata.dis.sdk.demo.producer.AppProducer
 
 set JAVACMD=java
-set JAVA_START_HEAP=256m
-set JAVA_MAX_HEAP=512m
+set JAVA_START_HEAP=2048m
+set JAVA_MAX_HEAP=2048m
 
 for /F "delims=" %%X in ('where java') DO set JAVA_PATH=%%X
 if "%JAVA_PATH%" == "" (
