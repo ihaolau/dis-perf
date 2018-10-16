@@ -5,6 +5,7 @@ import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.bigdata.dis.sdk.demo.data.IData;
 import com.huaweicloud.dis.DIS;
 import com.huaweicloud.dis.DISClient;
+import com.huaweicloud.dis.DISClientAsync;
 import com.huaweicloud.dis.core.util.StringUtils;
 import com.huaweicloud.dis.http.exception.ResourceAccessException;
 import com.huaweicloud.dis.iface.data.request.PutRecordsRequest;
@@ -32,7 +33,8 @@ class AppProducerThread extends Thread {
         this.streamName = streamName;
         this.statistics = statistics;
         this.data = data;
-        dis = new DISClient(Constants.DIS_CONFIG);
+        dis = new DISClientAsync(Constants.DIS_CONFIG);
+//        dis = new DISClient(Constants.DIS_CONFIG);
     }
 
     @Override

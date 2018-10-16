@@ -29,7 +29,7 @@
         <!-- DEBUG 表示显示MQTT上传的内容 -->
         <logger name="com.bigdata.dis.sdk.demo.producer.mqtt.MQTTClient" level="INFO"/>
         <!-- DEBUG 表示显示消费的记录内容 -->
-        <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="DEBUG"/>
+        <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="INFO"/>
         <!-- DEBUG 表示显示Kafka消费的记录内容 -->
         <logger name="com.bigdata.dis.sdk.demo.consumer.kafka.AppKafkaConsumerThread" level="INFO"/>
         <!-- WARN 表示关闭统计信息打印 -->
