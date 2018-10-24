@@ -6,6 +6,7 @@ import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.huaweicloud.dis.DIS;
 import com.huaweicloud.dis.DISClient;
 import com.huaweicloud.dis.DISClientAsync;
+import com.huaweicloud.dis.DISClientAsync2;
 import com.huaweicloud.dis.iface.data.request.GetPartitionCursorRequest;
 import com.huaweicloud.dis.iface.data.request.GetRecordsRequest;
 import com.huaweicloud.dis.iface.data.response.GetPartitionCursorResult;
@@ -42,8 +43,16 @@ class AppConsumerThread extends Thread {
     public AppConsumerThread(String streamName, Statistics statistics) {
         this.streamName = streamName;
         this.statistics = statistics;
-        dis = new DISClient(Constants.DIS_CONFIG);
-//        dis = new DISClientAsync(Constants.DIS_CONFIG);
+
+        if("true".equals(Constants.DIS_CONFIG.get("SyncOnAsync"))) {
+        	if("true".equals(Constants.DIS_CONFIG.get("NIOAsync"))) {
+        		dis = new DISClientAsync2(Constants.DIS_CONFIG);
+        	}else {
+        		dis = new DISClientAsync(Constants.DIS_CONFIG);
+        	}
+        }else {
+        	dis = new DISClient(Constants.DIS_CONFIG);
+        }
     }
 
     public void initPartition() {

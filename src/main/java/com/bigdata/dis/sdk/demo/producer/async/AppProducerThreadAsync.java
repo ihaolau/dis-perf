@@ -5,6 +5,7 @@ import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.bigdata.dis.sdk.demo.data.IData;
 import com.huaweicloud.dis.DISAsync;
 import com.huaweicloud.dis.DISClientAsync;
+import com.huaweicloud.dis.DISClientAsync2;
 import com.huaweicloud.dis.core.handler.AsyncHandler;
 import com.huaweicloud.dis.iface.data.request.PutRecordsRequest;
 import com.huaweicloud.dis.iface.data.response.PutRecordsResult;
@@ -33,7 +34,12 @@ class AppProducerThreadAsync extends Thread {
         this.streamName = streamName;
         this.statistics = statistics;
         this.data = data;
-        dis = new DISClientAsync(Constants.DIS_CONFIG, executorServicePool);
+        
+        if("true".equals(Constants.DIS_CONFIG.get("NIOAsync"))) {
+    		dis = new DISClientAsync2(Constants.DIS_CONFIG);
+    	}else {
+    		dis = new DISClientAsync(Constants.DIS_CONFIG, executorServicePool);
+    	}
     }
 
     @Override

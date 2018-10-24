@@ -23,7 +23,7 @@ public class GetCheckpoint
         
         GetCheckpointRequest getCheckpointRequest = new GetCheckpointRequest();
         getCheckpointRequest.setStreamName(streamName);
-        getCheckpointRequest.setAppId(appName);
+        getCheckpointRequest.setAppName(appName);
         getCheckpointRequest.setCheckpointType(CheckpointTypeEnum.LAST_READ.name());
         getCheckpointRequest.setPartitionId("0");
         

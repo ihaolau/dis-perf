@@ -64,7 +64,7 @@ public class MulitPartitionConsumerAsyncDemo {
         final String threadName = Thread.currentThread().getName();
 
         boolean isNIOAsync = "true".equals(Constants.DIS_CONFIG.get("NIOAsync"));
-        final DISAsync dis = isNIOAsync ? new DISClientAsync2(Constants.DIS_CONFIG) : new DISClientAsync(Constants.DIS_CONFIG, Executors.newFixedThreadPool(10));
+        final DISAsync dis = isNIOAsync ? new DISClientAsync2(Constants.DIS_CONFIG) : new DISClientAsync(Constants.DIS_CONFIG);
 
         DescribeStreamRequest describeStreamRequest = new DescribeStreamRequest();
 		describeStreamRequest.setStreamName(Constants.STREAM_NAME);
