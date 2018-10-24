@@ -62,7 +62,7 @@ class AppConsumerThread extends Thread {
             describeStreamRequest.setLimitPartitions(100);
             DescribeStreamResult describeStreamResult = null;
             List<PartitionResult> partitions = new ArrayList<>();
-            String startPartition = "0";
+            String startPartition = "";
             do {
                 describeStreamRequest.setStartPartitionId(startPartition);
                 describeStreamResult = dis.describeStream(describeStreamRequest);
