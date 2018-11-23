@@ -10,7 +10,7 @@ region=cn-north-1
 ak=
 sk=
 projectId=
-endpoint=https://dis.cn-north-1.myhuaweicloud.com:20004
+endpoint=https://dis.cn-north-1.myhuaweicloud.com
 # 通道名称
 stream_name=dis-long-test
 
