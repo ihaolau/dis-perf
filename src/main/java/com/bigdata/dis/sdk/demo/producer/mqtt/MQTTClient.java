@@ -33,7 +33,8 @@ public class MQTTClient {
     public String projectId = Constants.DIS_CONFIG.getProjectId();
     public String streamName = Constants.STREAM_NAME;
     public String mqttInstanceName = Constants.MQTT_INSTANCE_NAME;
-    public String clientId = Constants.MQTT_CLIENT_ID;
+//    public String clientId = Constants.MQTT_CLIENT_ID;
+    public String clientId = System.currentTimeMillis()+"mqttClient";
     public int qos = Constants.MQTT_QOS;
     private MqttClient client = null;
     private String userName = null;
@@ -41,8 +42,10 @@ public class MQTTClient {
 
     public MQTTClient() {
         String[] userNameAndPassword = getUserNameAndPassword();
-        this.userName = userNameAndPassword[0];
-        this.password = userNameAndPassword[1];
+//        this.userName = userNameAndPassword[0];
+//        this.password = userNameAndPassword[1];
+        this.userName = "ding";
+        this.password = "Changeme_123";
         print(this);
         connect();
     }
@@ -99,6 +102,13 @@ public class MQTTClient {
         } catch (Exception e) {
             close();
             throw new RuntimeException(e);
+        }
+    }
+
+    public void getRecords(PutRecordsRequest putRecordsRequest) {
+        String streamName = putRecordsRequest.getStreamName();
+        for (PutRecordsRequestEntry putRecordsRequestEntry : putRecordsRequest.getRecords()) {
+            publish(streamName, putRecordsRequestEntry.getData().array());
         }
     }
 
