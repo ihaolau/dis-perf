@@ -14,7 +14,7 @@ public class AppMqttProducer extends Scheduled {
     public void startThreads(String streamName) {
         executorServicePool = Executors.newFixedThreadPool(Constants.PRODUCER_THREAD_NUM);
         for (int threadIndex = 0; threadIndex < Constants.PRODUCER_THREAD_NUM; threadIndex++) {
-            executorServicePool.submit(new AppMqttProducerThread(streamName, this.statistics, Constants.PRODUCER_DATA_FACTORY));
+            executorServicePool.submit(new AppMqttProducerThread(streamName+threadIndex, this.statistics, Constants.PRODUCER_DATA_FACTORY));
         }
     }
 
