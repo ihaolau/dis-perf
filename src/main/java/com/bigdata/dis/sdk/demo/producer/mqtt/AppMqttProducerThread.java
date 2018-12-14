@@ -44,7 +44,7 @@ class AppMqttProducerThread extends Thread {
                 PutRecordsResult response = null;
                 long timeStart = System.currentTimeMillis();
                 try {
-                   // System.out.println(System.currentTimeMillis());
+                    // System.out.println(System.currentTimeMillis());
                     dis.putRecords(putRecordsRequest);
 
                     statistics.totalRequestSuccessTimes.incrementAndGet();

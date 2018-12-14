@@ -10,8 +10,14 @@
             <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
-                <SizeBasedTriggeringPolicy size="100 MB"/>
+                <SizeBasedTriggeringPolicy size="3096 MB"/>
             </Policies>
+            <DefaultRolloverStrategy fileIndex="max" max="10">
+                <Delete basePath="logs/" maxDepth="1">
+                    <IfFileName glob="*.log"/>
+                    <IfLastModified age="10d"/>
+                </Delete>
+            </DefaultRolloverStrategy>
         </RollingFile>
     </Appenders>
     <Loggers>
@@ -28,12 +34,14 @@
 
         <!-- DEBUG 表示显示MQTT上传的内容 -->
         <logger name="com.bigdata.dis.sdk.demo.producer.mqtt.MQTTClient" level="INFO"/>
-        <!-- DEBUG 表示显示消费的记录内容 -->
-        <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="INFO"/>
-        <!-- DEBUG 表示显示Kafka消费的记录内容 -->
+        <!-- DEBUG 表示显示Kafka消费的记录内容；INFO 表示不显示 -->
         <logger name="com.bigdata.dis.sdk.demo.consumer.kafka.AppKafkaConsumerThread" level="INFO"/>
-        <!-- WARN 表示关闭统计信息打印 -->
-        <logger name="com.bigdata.dis.sdk.demo.common.Statistics" level="INFO"/>
 
+        <!-- DEBUG 表示显示消费的每条记录内容；INFO 表示不显示消费的每条记录内容 -->
+        <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="DEBUG"/>
+        <!-- DEBUG 表示显示每条上传的结果；INFO 表示不显示每条上传的结果 -->
+        <logger name="com.bigdata.dis.sdk.demo.producer.AppProducerThread" level="DEBUG"/>
+        <!-- INFO 表示打开统计信息打印；WARN 表示关闭统计信息打印 -->
+        <logger name="com.bigdata.dis.sdk.demo.common.Statistics" level="INFO"/>
     </Loggers>
 </Configuration>

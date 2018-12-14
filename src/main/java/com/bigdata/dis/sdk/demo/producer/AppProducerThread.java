@@ -8,11 +8,10 @@ import com.huaweicloud.dis.DISClient;
 import com.huaweicloud.dis.DISClientAsync;
 import com.huaweicloud.dis.DISClientAsync2;
 import com.huaweicloud.dis.core.util.StringUtils;
-import com.huaweicloud.dis.http.exception.ResourceAccessException;
 import com.huaweicloud.dis.iface.data.request.PutRecordsRequest;
+import com.huaweicloud.dis.iface.data.request.PutRecordsRequestEntry;
 import com.huaweicloud.dis.iface.data.response.PutRecordsResult;
 import com.huaweicloud.dis.iface.data.response.PutRecordsResultEntry;
-import org.apache.http.NoHttpResponseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,18 +29,21 @@ class AppProducerThread extends Thread {
 
     private String streamName;
 
-    public AppProducerThread(String streamName, Statistics statistics, IData data) {
+    private int index;
+
+    public AppProducerThread(String streamName, Statistics statistics, IData data, int index) {
         this.streamName = streamName;
         this.statistics = statistics;
         this.data = data;
-        if("true".equals(Constants.DIS_CONFIG.get("SyncOnAsync"))) {
-        	if("true".equals(Constants.DIS_CONFIG.get("NIOAsync"))) {
-        		dis = new DISClientAsync2(Constants.DIS_CONFIG);
-        	}else {
-        		dis = new DISClientAsync(Constants.DIS_CONFIG);
-        	}
-        }else {
-        	dis = new DISClient(Constants.DIS_CONFIG);
+        this.index = index;
+        if ("true".equals(Constants.DIS_CONFIG.get("SyncOnAsync"))) {
+            if ("true".equals(Constants.DIS_CONFIG.get("NIOAsync"))) {
+                dis = new DISClientAsync2(Constants.DIS_CONFIG);
+            } else {
+                dis = new DISClientAsync(Constants.DIS_CONFIG);
+            }
+        } else {
+            dis = new DISClient(Constants.DIS_CONFIG);
         }
     }
 
@@ -58,19 +60,14 @@ class AppProducerThread extends Thread {
                 PutRecordsResult response = null;
                 long timeStart = System.currentTimeMillis();
                 try {
-                    response = null;
                     response = dis.putRecords(putRecordsRequest);
                     statistics.totalRequestSuccessTimes.incrementAndGet();
                     statistics.totalPostponeMillis.addAndGet(System.currentTimeMillis() - timeStart);
                 } catch (Exception e) {
-                    if (!(e instanceof ResourceAccessException && e.getCause() instanceof NoHttpResponseException)) {
-                        statistics.totalRequestFailedTimes.incrementAndGet();
-                        LOGGER.error("Failed put, cost " + (System.currentTimeMillis() - timeStart) + "ms. " + e.getMessage(), e);
-                        statistics.totalSendFailedRecords.addAndGet(putRecordsRequest.getRecords().size());
-                        TimeUnit.MILLISECONDS.sleep(Constants.SERVER_FAILED_SLEEP_TIME);
-                    } else {
-                        LOGGER.info(e.getMessage());
-                    }
+                    LOGGER.error("Failed put, cost " + (System.currentTimeMillis() - timeStart) + "ms. " + e.getMessage(), e);
+                    statistics.totalRequestFailedTimes.incrementAndGet();
+                    statistics.totalSendFailedRecords.addAndGet(putRecordsRequest.getRecords().size());
+                    TimeUnit.MILLISECONDS.sleep(Constants.SERVER_FAILED_SLEEP_TIME);
                 }
 
                 if (response != null) {
@@ -78,17 +75,31 @@ class AppProducerThread extends Thread {
                     long failed = response.getFailedRecordCount().longValue();
                     statistics.totalSendSuccessRecords.addAndGet(success);
                     statistics.totalSendFailedRecords.addAndGet(failed);
-                    LOGGER.debug("CurrentPut {} records[success {} / failed {}] spend {} ms.",
-                            putRecordsRequest.getRecords().size(), success, failed, System.currentTimeMillis() - timeStart);
-                    for (PutRecordsResultEntry putRecordsResultEntry : response.getRecords()) {
-                        if (!StringUtils.isNullOrEmpty(putRecordsResultEntry.getErrorCode())
-                                && !"DIS.4303".equals(putRecordsResultEntry.getErrorCode())) {
-                            LOGGER.error("Failed to put {}", putRecordsResultEntry);
+
+                    if (LOGGER.isDebugEnabled() || failed > 0) {
+                        long end = System.currentTimeMillis();
+                        LOGGER.trace("CurrentPut {} records[success {} / failed {}] spend {} ms.",
+                                putRecordsRequest.getRecords().size(), success, failed, end - timeStart);
+                        int i = 0;
+                        for (PutRecordsResultEntry putRecordsResultEntry : response.getRecords()) {
+                            PutRecordsRequestEntry putRecordsRequestEntry = putRecordsRequest.getRecords().get(i++);
+                            String content = new String(putRecordsRequestEntry.getData().array());
+                            content = content.length() > Constants.DISPLAY_CONTENT_LIMIT ?
+                                    content.substring(0, Constants.DISPLAY_CONTENT_LIMIT) + "..." : content;
+                            if (!StringUtils.isNullOrEmpty(putRecordsResultEntry.getErrorCode())) {
+                                LOGGER.error("Failed to put [{}], ErrorCode [{}], ErrorMsg [{}]",
+                                        content, putRecordsResultEntry.getErrorCode(), putRecordsResultEntry.getErrorMessage());
+                            } else {
+                                LOGGER.debug("Success to put [{}], Partition [{}], SequenceNumber [{}]",
+                                        content, putRecordsResultEntry.getPartitionId(), putRecordsResultEntry.getSequenceNumber());
+                            }
                         }
                     }
                 }
 
-                TimeUnit.MILLISECONDS.sleep(Constants.PRODUCER_REQUEST_SLEEP_TIME);
+                if (Constants.PRODUCER_REQUEST_SLEEP_TIME > 0) {
+                    TimeUnit.MILLISECONDS.sleep(Constants.PRODUCER_REQUEST_SLEEP_TIME);
+                }
             }
         } catch (Exception e) {
             if (!(e instanceof InterruptedException)) {

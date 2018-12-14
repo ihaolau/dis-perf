@@ -31,26 +31,25 @@ public class SubscribeSample {
             client.setCallback(new MqttCallback() {
 
                 public void connectionLost(Throwable cause) {
-                    System.out.println("connectionLost"+cause);
+                    System.out.println("connectionLost" + cause);
                     try {
                         client.connect(options);
-                    }
-                    catch (Exception e){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                 }
 
                 public void messageArrived(String topic, MqttMessage message) throws Exception {
-                   // System.out.println(System.currentTimeMillis());
-                    System.out.println("topic:"+topic);
-                    System.out.println("Qos:"+message.getQos());
-                    System.out.println("message content:"+new String(message.getPayload()));
+                    // System.out.println(System.currentTimeMillis());
+                    System.out.println("topic:" + topic);
+                    System.out.println("Qos:" + message.getQos());
+                    System.out.println("message content:" + new String(message.getPayload()));
 
                 }
 
                 public void deliveryComplete(IMqttDeliveryToken token) {
-                    System.out.println("deliveryComplete---------"+ token.isComplete());
+                    System.out.println("deliveryComplete---------" + token.isComplete());
                 }
 
             });

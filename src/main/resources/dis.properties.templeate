@@ -14,12 +14,8 @@ endpoint=https://dis.cn-north-1.myhuaweicloud.com
 # 通道名称
 stream_name=dis-long-test
 
-nio.io.threads=
-DEFAULT_MAX_PER_ROUTE=50
-NIOAsync=false
-SyncOnAsync=false
 
-# 总共发送的消息条数(-1代表无限制)
+# 总共发送的消息条数(-1代表无限制;整数请设置为producer_thread_num*producer_request_record_num的倍数)
 producer_record_num=100000
 # 每条消息的长度(B)
 producer_record_length=1024
@@ -31,8 +27,9 @@ producer_request_record_num=200
 producer_request_sleep_time=0
 # 生产者数据构造类
 producer_data_factory=com.bigdata.dis.sdk.demo.data.RandomData
-# body体序列化格式
+# body体序列化格式(protobuf/json)
 producer_body_serialize_type=protobuf
+
 
 # 消费端开始消费的起始位置(-2: 从最旧开始消费; -1: 从最新开始消费; 自然数N(N>=0): 从指定位置开始消费)
 consumer_offset=-1
@@ -40,10 +37,12 @@ consumer_offset=-1
 consumer_partition_num=auto
 # 每次消费请求最大期望接收条数
 consumer_limit=10000
+# 每次发送消费请求后等待时间
+consumer_request_sleep_time=0
 
 
 # 创建通道的分区数
-create_partition_num=50
+create_partition_num=1
 # 创建通道的类型(COMMON: 普通通道; ADVANCED: 高级通道)
 create_stream_type=ADVANCED
 # 创建通道的生命周期(1~7)
@@ -60,12 +59,32 @@ auto_run_num=-1
 auto_run_user_name=dis
 
 
-#records.retries=8
-#exception.retries=3
-# 模拟数据时间戳(mock;now)
-data.timestamp=now
+# 提交Checkpoint使用的app名称
+checkpoint_app_name=myApp
+# 提交Checkpoint的偏移量
+checkpoint_commit_offset=0
+# 提交Checkpoint的分区ID
+checkpoint_partition_id=0
 
-#mqtt_broker=tcp://49.4.52.253:8964
-mqtt_broker=ssl://49.4.52.253:8965
-#mqtt_client_id=client01
-#mqtt_security_mode=2
+
+# SDK流控重试次数
+#records.retries=20
+# SDK异常重试次数
+#exception.retries=8
+
+
+# 变更的目标分区数
+update_partition_count=2
+
+
+# MQTT broker地址
+mqtt_broker=tcp://49.4.52.253:8964
+# MQTT QoS级别
+mqtt_qos=1
+
+
+# 异步IO配置
+nio.io.threads=
+#DEFAULT_MAX_PER_ROUTE=50
+NIOAsync=false
+SyncOnAsync=false

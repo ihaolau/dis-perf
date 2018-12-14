@@ -33,8 +33,8 @@ public class MQTTClient {
     public String projectId = Constants.DIS_CONFIG.getProjectId();
     public String streamName = Constants.STREAM_NAME;
     public String mqttInstanceName = Constants.MQTT_INSTANCE_NAME;
-//    public String clientId = Constants.MQTT_CLIENT_ID;
-    public String clientId = System.currentTimeMillis()+"mqttClient";
+    //    public String clientId = Constants.MQTT_CLIENT_ID;
+    public String clientId = System.currentTimeMillis() + "mqttClient";
     public int qos = Constants.MQTT_QOS;
     private MqttClient client = null;
     private String userName = null;
@@ -54,6 +54,42 @@ public class MQTTClient {
         if (init) {
             connect();
         }
+    }
+
+    public static void main(String[] args) {
+        if (args != null && args.length > 0) {
+            if ("genAuth".equalsIgnoreCase(args[0])) {
+                MQTTClient client = new MQTTClient(false);
+                String[] userNameAndPassword = client.getUserNameAndPassword();
+                client.userName = userNameAndPassword[0];
+                client.password = userNameAndPassword[1];
+                print(client);
+                return;
+            }
+        }
+        MQTTClient client = new MQTTClient();
+        try {
+            while (true) {
+                List<EquInfo> equInfos = EquInfo.getRandom();
+                for (EquInfo info : equInfos) {
+                    client.publish(JsonUtils.objToJson(info));
+                }
+                Thread.sleep(Constants.PRODUCER_REQUEST_SLEEP_TIME);
+            }
+        } catch (Exception e) {
+            LOGGER.error(e.getMessage(), e);
+        }
+        client.close();
+    }
+
+    private static void print(MQTTClient client) {
+        LOGGER.info("UserName: " + client.userName);
+        LOGGER.info("Password: " + client.password);
+        LOGGER.info("ClientId: " + client.clientId);
+        LOGGER.info("MqttInstanceName: " + client.mqttInstanceName);
+        LOGGER.info("Broker: " + client.broker);
+        LOGGER.info("QosLevel: " + client.qos);
+        LOGGER.info("Topic: " + client.streamName);
     }
 
     private String[] getUserNameAndPassword() {
@@ -183,42 +219,5 @@ public class MQTTClient {
 
         SSLSocketFactory ssf = sc.getSocketFactory();
         return ssf;
-    }
-
-
-    public static void main(String[] args) {
-        if (args != null && args.length > 0) {
-            if ("genAuth".equalsIgnoreCase(args[0])) {
-                MQTTClient client = new MQTTClient(false);
-                String[] userNameAndPassword = client.getUserNameAndPassword();
-                client.userName = userNameAndPassword[0];
-                client.password = userNameAndPassword[1];
-                print(client);
-                return;
-            }
-        }
-        MQTTClient client = new MQTTClient();
-        try {
-            while (true) {
-                List<EquInfo> equInfos = EquInfo.getRandom();
-                for (EquInfo info : equInfos) {
-                    client.publish(JsonUtils.objToJson(info));
-                }
-                Thread.sleep(Constants.PRODUCER_REQUEST_SLEEP_TIME);
-            }
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage(), e);
-        }
-        client.close();
-    }
-
-    private static void print(MQTTClient client) {
-        LOGGER.info("UserName: " + client.userName);
-        LOGGER.info("Password: " + client.password);
-        LOGGER.info("ClientId: " + client.clientId);
-        LOGGER.info("MqttInstanceName: " + client.mqttInstanceName);
-        LOGGER.info("Broker: " + client.broker);
-        LOGGER.info("QosLevel: " + client.qos);
-        LOGGER.info("Topic: " + client.streamName);
     }
 }

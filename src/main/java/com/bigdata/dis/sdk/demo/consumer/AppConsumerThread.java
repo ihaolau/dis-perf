@@ -19,7 +19,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,27 +30,23 @@ class AppConsumerThread extends Thread {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConsumerThread.class);
 
     private final DIS dis;
-
-    private int partitionSize = 0;
-
-    private Map<Integer, String> iteratorMap = new ConcurrentHashMap<>();
-
-    private Statistics statistics;
-
     private final String streamName;
+    private int partitionSize = 0;
+    private Map<Integer, String> iteratorMap = new ConcurrentHashMap<>();
+    private Statistics statistics;
 
     public AppConsumerThread(String streamName, Statistics statistics) {
         this.streamName = streamName;
         this.statistics = statistics;
 
-        if("true".equals(Constants.DIS_CONFIG.get("SyncOnAsync"))) {
-        	if("true".equals(Constants.DIS_CONFIG.get("NIOAsync"))) {
-        		dis = new DISClientAsync2(Constants.DIS_CONFIG);
-        	}else {
-        		dis = new DISClientAsync(Constants.DIS_CONFIG);
-        	}
-        }else {
-        	dis = new DISClient(Constants.DIS_CONFIG);
+        if ("true".equals(Constants.DIS_CONFIG.get("SyncOnAsync"))) {
+            if ("true".equals(Constants.DIS_CONFIG.get("NIOAsync"))) {
+                dis = new DISClientAsync2(Constants.DIS_CONFIG);
+            } else {
+                dis = new DISClientAsync(Constants.DIS_CONFIG);
+            }
+        } else {
+            dis = new DISClient(Constants.DIS_CONFIG);
         }
     }
 
@@ -129,7 +124,9 @@ class AppConsumerThread extends Thread {
                                     }
                                 }
 
-                                TimeUnit.MILLISECONDS.sleep(Constants.CONSUMER_REQUEST_SLEEP_TIME);
+                                if (Constants.CONSUMER_REQUEST_SLEEP_TIME > 0) {
+                                    TimeUnit.MILLISECONDS.sleep(Constants.CONSUMER_REQUEST_SLEEP_TIME);
+                                }
                             }
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage(), e);
@@ -154,10 +151,13 @@ class AppConsumerThread extends Thread {
         }
         for (Record record : records) {
             String content = new String(record.getData().array());
+            content = content.length() > Constants.DISPLAY_CONTENT_LIMIT ?
+                    content.substring(0, Constants.DISPLAY_CONTENT_LIMIT) + "..." : content;
+            content.replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n");
             String sequenceNumber = record.getSequenceNumber();
             Long timestamp = record.getTimestamp();
-            LOGGER.debug("Partition [{}], Content [{}], partitionKey [{}], sequenceNumber [{}], timestamp [{}]",
-                    partitionNum, content, record.getPartitionKey(), sequenceNumber, Public.DATE_FORMATE.format(new Date(timestamp)));
+            LOGGER.debug("Content [{}], Partition [{}], SequenceNumber [{}], PartitionKey [{}], Timestamp [{}]",
+                    content, partitionNum, sequenceNumber, record.getPartitionKey(), Public.formatTimestamp(timestamp));
         }
     }
 }

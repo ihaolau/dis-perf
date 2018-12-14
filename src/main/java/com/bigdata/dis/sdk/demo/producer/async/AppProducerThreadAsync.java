@@ -34,12 +34,12 @@ class AppProducerThreadAsync extends Thread {
         this.streamName = streamName;
         this.statistics = statistics;
         this.data = data;
-        
-        if("true".equals(Constants.DIS_CONFIG.get("NIOAsync"))) {
-    		dis = new DISClientAsync2(Constants.DIS_CONFIG);
-    	}else {
-    		dis = new DISClientAsync(Constants.DIS_CONFIG, executorServicePool);
-    	}
+
+        if ("true".equals(Constants.DIS_CONFIG.get("NIOAsync"))) {
+            dis = new DISClientAsync2(Constants.DIS_CONFIG);
+        } else {
+            dis = new DISClientAsync(Constants.DIS_CONFIG, executorServicePool);
+        }
     }
 
     @Override

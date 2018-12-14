@@ -1,7 +1,6 @@
 package com.bigdata.dis.sdk.demo.other;
 
 import java.sql.*;
-import java.util.TimeZone;
 
 public class MysqlInsert {
 

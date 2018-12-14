@@ -56,7 +56,7 @@ public class CreateStream {
             throw e;
         }
 
-        LOGGER.info("Success to create stream {}, cost {}ms",
+        LOGGER.info("Success to create stream [{}], cost {}ms",
                 createStreamRequest.getStreamName(), (System.currentTimeMillis() - start));
 
         return createStreamResult;

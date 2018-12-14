@@ -13,14 +13,7 @@ To get started using dis perf, you will need those things:
 3. Maven 3+
 
 ### Package DIS Perf
-1. you should install DIS jars to maven
-
-```
-In dir dis_jar, you can run dis_sdk_maven_install.bat or dis_sdk_maven_install.sh to install
-huaweicloud-sdk-java-dis/huaweicloud-sdk-java-dis-iface/dis-kafka-adapter/java-sdk-core
-to you local maven repository
-```
-2. use  maven command to package, and you will get dis-perf-1.0.0.zip in directory  `target`
+use  maven command to package, and you will get dis-perf-X.X.X.zip in directory  `target`
 
 ```
 mvn clean package
@@ -38,7 +31,7 @@ mvn clean package
 | ak          | User's plaintext AK. The My Credential page provides you the option to download your AK/SK file. | -                                        |
 | sk          | User's plaintext SK. The My Credential page provides you the option to download your AK/SK file. | -                                        |
 | projectId   | Project ID specific to your region. The My Credential page displays all ProjectIDs. | -                                        |
-| endpoint    | DIS gateway address                      | https://dis.cn-north-1.myhwclouds.com:20004 |
+| endpoint    | DIS gateway address                      | https://dis.cn-north-1.myhuaweicloud.com |
 | stream_name | You stream name which created in DIS     |                                          |
 
 
@@ -47,28 +40,33 @@ mvn clean package
 4. Start Consumer, just Run `com.bigdata.dis.sdk.demo.consumer.AppConsumer`
 
 ### Running DIS Perf with package
-1. Unzip dis-perf-1.0.0.zip on Linux or Windows
+1. You can download dis-perf-X.X.X.zip from target/
+2. Unzip dis-perf-1.0.0.zip on Linux or Windows
 ```
 unzip dis-perf-1.0.0.zip
 
 or use winrar on Windows
 ```
-2. Config dis.properties
+3. Config dis.properties
 
    See **Running DIS Perf with IDE -> Config dis.properties**
 
-3. Start Producer
+4. Start Producer
 
 ```
-sh bin/bash/start_producer.sh
+dos2unix bin/bash/*.sh
+
+bash bin/bash/start_producer.sh
 
 or enter "bin" directory,and double click start_producer.bat on Windows
 ```
 
-4. Start Consumer
+5. Start Consumer
 
 ```
-sh bin/start_consumer.sh
+dos2unix bin/bash/*.sh
+
+bash bin/bash/start_consumer.sh
 
 or enter "bin" directory,and double click start_consumer.bat on Windows
 ```

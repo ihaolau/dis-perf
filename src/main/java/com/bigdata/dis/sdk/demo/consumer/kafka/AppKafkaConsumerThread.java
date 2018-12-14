@@ -1,8 +1,8 @@
 package com.bigdata.dis.sdk.demo.consumer.kafka;
 
-import com.bigdata.dis.sdk.adapter.kafka.consumer.DISKafkaConsumer;
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Statistics;
+import com.huaweicloud.dis.adapter.kafka.consumer.DISKafkaConsumer;
 import com.huaweicloud.dis.util.PartitionCursorTypeEnum;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
@@ -52,6 +52,8 @@ class AppKafkaConsumerThread extends Thread {
             topicPartitions.add(new TopicPartition(this.streamName, i));
         }
         consumer.assign(topicPartitions);
+
+
         if (PartitionCursorTypeEnum.TRIM_HORIZON == Constants.CONSUMER_CURSOR_TYPE) {
             consumer.seekToBeginning(topicPartitions);
         } else if (PartitionCursorTypeEnum.LATEST == Constants.CONSUMER_CURSOR_TYPE) {

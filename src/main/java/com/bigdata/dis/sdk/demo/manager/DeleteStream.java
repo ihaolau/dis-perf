@@ -7,8 +7,6 @@ import com.huaweicloud.dis.iface.stream.response.DeleteStreamResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.List;
-
 public class DeleteStream {
     private static final Logger LOGGER = LoggerFactory.getLogger(DeleteStream.class);
 
@@ -30,19 +28,8 @@ public class DeleteStream {
             throw e;
         }
 
-        LOGGER.info("Success to delete stream {}, cost {}ms",
+        LOGGER.info("Success to delete stream [{}], cost {}ms",
                 deleteStreamRequest.getStreamName(), (System.currentTimeMillis() - start));
         return deleteStreamResult;
-    }
-
-    public void runAll() {
-        List<String> streams = new ListStreams().run();
-        if (streams == null || streams.size() == 0) {
-            LOGGER.info("No stream.");
-        }
-
-        for (String stream : streams) {
-            new DeleteStream().run(stream);
-        }
     }
 }

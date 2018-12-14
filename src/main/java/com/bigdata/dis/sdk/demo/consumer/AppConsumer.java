@@ -10,13 +10,13 @@ import java.util.concurrent.Executors;
 public class AppConsumer extends Scheduled {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppConsumer.class);
 
+    public static void main(String[] args) {
+        new AppConsumer().run(Constants.STREAM_NAME);
+    }
+
     @Override
     public void startThreads(String streamName) {
         executorServicePool = Executors.newSingleThreadExecutor();
         executorServicePool.submit(new AppConsumerThread(streamName, this.statistics));
-    }
-
-    public static void main(String[] args) {
-        new AppConsumer().run(Constants.STREAM_NAME);
     }
 }

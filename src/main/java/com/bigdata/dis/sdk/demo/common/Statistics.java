@@ -25,70 +25,75 @@ public class Statistics {
 
     public long startTime;
     public DecimalFormat df = new DecimalFormat("0.00");
+    public Runnable innerRun;
 
     public void start() {
         startTime = System.currentTimeMillis();
-        scheduledExecutorService.scheduleAtFixedRate(new Runnable() {
-            long lastCurrContinueSecond = (System.currentTimeMillis() - startTime) / 1000;
-            long lastCurrTotalRequestTimes = totalRequestTimes.get();
-            long lastCurrTotalRequestSuccessTimes = totalRequestSuccessTimes.get();
-            long lastCurrTotalRequestFailedTimes = totalRequestFailedTimes.get();
-            long lastCurrTotalSendRecords = totalSendRecords.get();
-            long lastCurrTotalSendSuccessRecords = totalSendSuccessRecords.get();
-            long lastCurrTotalSendFailedRecords = totalSendFailedRecords.get();
-            long lastCurrTotalPostponeMillis = totalPostponeMillis.get();
-            long lastCurrTotalSendSuccessTraffic = totalSendSuccessTraffic.get();
-
-            @Override
-            public void run() {
-                try {
-                    long currContinueSecond = (System.currentTimeMillis() - startTime) / 1000;
-                    long currTotalRequestTimes = totalRequestTimes.get();
-                    long currTotalRequestSuccessTimes = totalRequestSuccessTimes.get();
-                    long currTotalRequestFailedTimes = totalRequestFailedTimes.get();
-                    long currTotalSendRecords = totalSendRecords.get();
-                    long currTotalSendSuccessRecords = totalSendSuccessRecords.get();
-                    long currTotalSendFailedRecords = totalSendFailedRecords.get();
-                    long currTotalPostponeMillis = totalPostponeMillis.get();
-                    long currTotalSendSuccessTraffic = totalSendSuccessTraffic.get();
-
-                    long currTPS = currTotalRequestSuccessTimes - lastCurrTotalRequestSuccessTimes;
-                    LOGGER.info("TPS [{}] / [{}]({}/{}), " +
-                                    "\tThroughput [{}] / [{}]({}/{}), " +
-                                    "\tLatency [{}] / [{}]({}/{}), " +
-                                    //"\tTraffic [{}] / [{}]({}/{}), " +
-                                    "\tTotalRequestTimes [{}](success {} / failed {})" +
-                                    ", TotalSendRecords [{}](success {} / failed {}).",
-                            currTPS,
-                            df.format(1f * currTotalRequestSuccessTimes / currContinueSecond), currTotalRequestSuccessTimes, currContinueSecond,
-                            (currTotalSendSuccessRecords - lastCurrTotalSendSuccessRecords),
-                            df.format(1f * currTotalSendSuccessRecords / currContinueSecond), currTotalSendSuccessRecords, currContinueSecond,
-                            ((currTotalPostponeMillis - lastCurrTotalPostponeMillis) / (currTPS > 0 ? currTPS : 1)),
-                            df.format(1f * currTotalPostponeMillis / currTotalRequestSuccessTimes), currTotalPostponeMillis, currTotalRequestSuccessTimes,
-                            //(currTotalSendSuccessTraffic - lastCurrTotalSendSuccessTraffic),
-                            //df.format(1f * currTotalSendSuccessTraffic / currTotalRequestTimes), currTotalSendSuccessTraffic, currTotalRequestTimes,
-                            currTotalRequestTimes, currTotalRequestSuccessTimes, currTotalRequestFailedTimes,
-                            currTotalSendRecords, currTotalSendSuccessRecords, currTotalSendFailedRecords
-                    );
-
-                    lastCurrContinueSecond = currContinueSecond;
-                    lastCurrTotalRequestTimes = currTotalRequestTimes;
-                    lastCurrTotalRequestSuccessTimes = currTotalRequestSuccessTimes;
-                    lastCurrTotalRequestFailedTimes = currTotalRequestFailedTimes;
-                    lastCurrTotalSendRecords = currTotalSendRecords;
-                    lastCurrTotalSendSuccessRecords = currTotalSendSuccessRecords;
-                    lastCurrTotalSendFailedRecords = currTotalSendFailedRecords;
-                    lastCurrTotalPostponeMillis = currTotalPostponeMillis;
-                    lastCurrTotalSendSuccessTraffic = currTotalSendSuccessTraffic;
-                } catch (Exception e) {
-                    LOGGER.error(e.getMessage(), e);
-                }
-            }
-        }, 1000, 1000, TimeUnit.MILLISECONDS);
+        innerRun = new InnerRun();
+        scheduledExecutorService.scheduleAtFixedRate(innerRun, 1000, 1000, TimeUnit.MILLISECONDS);
     }
 
     public void stop() {
         scheduledExecutorService.shutdown();
+    }
+
+    public class InnerRun implements Runnable {
+
+        long lastCurrContinueSecond = (System.currentTimeMillis() - startTime) / 1000;
+        long lastCurrTotalRequestTimes = totalRequestTimes.get();
+        long lastCurrTotalRequestSuccessTimes = totalRequestSuccessTimes.get();
+        long lastCurrTotalRequestFailedTimes = totalRequestFailedTimes.get();
+        long lastCurrTotalSendRecords = totalSendRecords.get();
+        long lastCurrTotalSendSuccessRecords = totalSendSuccessRecords.get();
+        long lastCurrTotalSendFailedRecords = totalSendFailedRecords.get();
+        long lastCurrTotalPostponeMillis = totalPostponeMillis.get();
+        long lastCurrTotalSendSuccessTraffic = totalSendSuccessTraffic.get();
+
+        @Override
+        public void run() {
+            try {
+                long currContinueSecond = (System.currentTimeMillis() - startTime) / 1000;
+                long currTotalRequestTimes = totalRequestTimes.get();
+                long currTotalRequestSuccessTimes = totalRequestSuccessTimes.get();
+                long currTotalRequestFailedTimes = totalRequestFailedTimes.get();
+                long currTotalSendRecords = totalSendRecords.get();
+                long currTotalSendSuccessRecords = totalSendSuccessRecords.get();
+                long currTotalSendFailedRecords = totalSendFailedRecords.get();
+                long currTotalPostponeMillis = totalPostponeMillis.get();
+                long currTotalSendSuccessTraffic = totalSendSuccessTraffic.get();
+
+                long currTPS = currTotalRequestSuccessTimes - lastCurrTotalRequestSuccessTimes;
+                LOGGER.info("TPS [{}] / [{}]({}/{}), " +
+                                "\tThroughput [{}] / [{}]({}/{}), " +
+                                "\tLatency [{}] / [{}]({}/{}), " +
+                                //"\tTraffic [{}] / [{}]({}/{}), " +
+                                "\tTotalRequestTimes [{}](success {} / failed {})" +
+                                ", TotalSendRecords [{}](success {} / failed {}).",
+                        currTPS,
+                        df.format(1f * currTotalRequestSuccessTimes / currContinueSecond), currTotalRequestSuccessTimes, currContinueSecond,
+                        (currTotalSendSuccessRecords - lastCurrTotalSendSuccessRecords),
+                        df.format(1f * currTotalSendSuccessRecords / currContinueSecond), currTotalSendSuccessRecords, currContinueSecond,
+                        ((currTotalPostponeMillis - lastCurrTotalPostponeMillis) / (currTPS > 0 ? currTPS : 1)),
+                        df.format(1f * currTotalPostponeMillis / currTotalRequestSuccessTimes), currTotalPostponeMillis, currTotalRequestSuccessTimes,
+                        //(currTotalSendSuccessTraffic - lastCurrTotalSendSuccessTraffic),
+                        //df.format(1f * currTotalSendSuccessTraffic / currTotalRequestTimes), currTotalSendSuccessTraffic, currTotalRequestTimes,
+                        currTotalRequestTimes, currTotalRequestSuccessTimes, currTotalRequestFailedTimes,
+                        currTotalSendRecords, currTotalSendSuccessRecords, currTotalSendFailedRecords
+                );
+
+                lastCurrContinueSecond = currContinueSecond;
+                lastCurrTotalRequestTimes = currTotalRequestTimes;
+                lastCurrTotalRequestSuccessTimes = currTotalRequestSuccessTimes;
+                lastCurrTotalRequestFailedTimes = currTotalRequestFailedTimes;
+                lastCurrTotalSendRecords = currTotalSendRecords;
+                lastCurrTotalSendSuccessRecords = currTotalSendSuccessRecords;
+                lastCurrTotalSendFailedRecords = currTotalSendFailedRecords;
+                lastCurrTotalPostponeMillis = currTotalPostponeMillis;
+                lastCurrTotalSendSuccessTraffic = currTotalSendSuccessTraffic;
+            } catch (Exception e) {
+                LOGGER.error(e.getMessage(), e);
+            }
+        }
     }
 }
 

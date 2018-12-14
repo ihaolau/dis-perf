@@ -5,6 +5,7 @@ import com.huaweicloud.dis.DISClient;
 import com.huaweicloud.dis.iface.stream.request.DescribeStreamRequest;
 import com.huaweicloud.dis.iface.stream.response.DescribeStreamResult;
 import com.huaweicloud.dis.iface.stream.response.PartitionResult;
+import com.huaweicloud.dis.util.JsonUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +41,8 @@ public class DescribeStream {
         while (describeStreamResult.getHasMorePartitions());
 
         long total = 0;
-        LOGGER.info("StreamType {}, RetentionPeriod {}.", describeStreamResult.getStreamType(), describeStreamResult.getRetentionPeriod());
+        describeStreamResult.setPartitions(null);
+        LOGGER.info("{}", JsonUtils.objToJson(describeStreamResult));
         for (PartitionResult partition : partitions) {
             String last = partition.getSequenceNumberRange().split(":")[1].trim();
             total += Long.valueOf(last.substring(0, last.length() - 1));
@@ -48,7 +50,7 @@ public class DescribeStream {
                     partition.getPartitionId(), partition.getSequenceNumberRange(),
                     partition.getStatus(), partition.getHashRange());
         }
-        LOGGER.info("Success to describe stream {}, total records {}, cost {}ms",
+        LOGGER.info("Success to describe stream [{}], total records [{}], cost {}ms",
                 describeStreamRequest.getStreamName(), total, (System.currentTimeMillis() - start));
         return partitions;
     }

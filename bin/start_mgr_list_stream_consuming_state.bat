@@ -1,0 +1,1 @@
+call base.bat com.bigdata.dis.sdk.demo.manager.ListStreamConsumingState

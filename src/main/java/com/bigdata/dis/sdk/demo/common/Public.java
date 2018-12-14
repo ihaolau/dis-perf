@@ -2,12 +2,15 @@ package com.bigdata.dis.sdk.demo.common;
 
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Random;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.concurrent.ThreadLocalRandom;
 
 public class Public {
     public static SimpleDateFormat DATE_FORMATE = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss.SSS");
+
+    public static DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss.SSS");
 
     public static DecimalFormat DF3 = new DecimalFormat("#0.000");
 
@@ -24,7 +27,7 @@ public class Public {
     }
 
     public static String currentDateTime() {
-        return DATE_FORMATE.format(Calendar.getInstance().getTime());
+        return LocalDateTime.now().toString();
     }
 
     public static int nextInt(int bound) {
@@ -62,7 +65,12 @@ public class Public {
         return d;
     }
 
+    public static String formatTimestamp(long timestamp) {
+        return DATE_FORMATE.format(new Date(timestamp));
+    }
+
     public static void main(String[] args) {
         System.out.println(Public.nextInt(1));
     }
+
 }

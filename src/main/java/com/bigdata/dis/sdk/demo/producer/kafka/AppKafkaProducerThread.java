@@ -1,9 +1,9 @@
 package com.bigdata.dis.sdk.demo.producer.kafka;
 
-import com.bigdata.dis.sdk.adapter.kafka.producer.DISKafkaProducer;
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.bigdata.dis.sdk.demo.data.IData;
+import com.huaweicloud.dis.adapter.kafka.producer.DISKafkaProducer;
 import com.huaweicloud.dis.iface.data.request.PutRecordsRequest;
 import com.huaweicloud.dis.iface.data.request.PutRecordsRequestEntry;
 import org.apache.kafka.clients.producer.Callback;
