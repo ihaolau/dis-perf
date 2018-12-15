@@ -2,6 +2,7 @@ package com.bigdata.dis.sdk.demo.manager;
 
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.huaweicloud.dis.DISClient;
+import com.huaweicloud.dis.core.util.StringUtils;
 import com.huaweicloud.dis.iface.stream.request.DescribeStreamRequest;
 import com.huaweicloud.dis.iface.stream.response.DescribeStreamResult;
 import com.huaweicloud.dis.iface.stream.response.PartitionResult;
@@ -44,8 +45,12 @@ public class DescribeStream {
         describeStreamResult.setPartitions(null);
         LOGGER.info("{}", JsonUtils.objToJson(describeStreamResult));
         for (PartitionResult partition : partitions) {
-            String last = partition.getSequenceNumberRange().split(":")[1].trim();
-            total += Long.valueOf(last.substring(0, last.length() - 1));
+            if (!StringUtils.isNullOrEmpty(partition.getSequenceNumberRange())) {
+                String last = partition.getSequenceNumberRange().split(":")[1].trim();
+                if (!"-1".equals(last)) {
+                    total += Long.valueOf(last.substring(0, last.length() - 1));
+                }
+            }
             LOGGER.info("PartitionId='{}', SequenceNumberRange='{}', Status='{}', HashRange='{}'",
                     partition.getPartitionId(), partition.getSequenceNumberRange(),
                     partition.getStatus(), partition.getHashRange());
