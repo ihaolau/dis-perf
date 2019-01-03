@@ -12,6 +12,8 @@ public class AppProducer extends Scheduled {
 
     public static void main(String[] args) {
         new AppProducer().run(Constants.STREAM_NAME);
+
+
     }
 
     public void startThreads(String streamName) {

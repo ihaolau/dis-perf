@@ -31,21 +31,19 @@ public class MQTTClient {
     public String ak = Constants.DIS_CONFIG.getAK();
     public String sk = Constants.DIS_CONFIG.getSK();
     public String projectId = Constants.DIS_CONFIG.getProjectId();
-    public String streamName = Constants.STREAM_NAME;
+    public String streamName = Constants.MQTT_TOPIC_NAME;
     public String mqttInstanceName = Constants.MQTT_INSTANCE_NAME;
     //    public String clientId = Constants.MQTT_CLIENT_ID;
     public String clientId = System.currentTimeMillis() + "mqttClient";
     public int qos = Constants.MQTT_QOS;
     private MqttClient client = null;
-    private String userName = null;
-    private String password = null;
+    private String userName = Constants.MQTT_USER_NAME;
+    private String password = Constants.MQTT_PASSWORD;
 
     public MQTTClient() {
         String[] userNameAndPassword = getUserNameAndPassword();
 //        this.userName = userNameAndPassword[0];
 //        this.password = userNameAndPassword[1];
-        this.userName = "ding";
-        this.password = "Changeme_123";
         print(this);
         connect();
     }

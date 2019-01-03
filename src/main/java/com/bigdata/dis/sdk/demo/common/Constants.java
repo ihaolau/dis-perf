@@ -12,6 +12,9 @@ public class Constants {
     public static final DISConfig DIS_CONFIG = DISConfig.buildDefaultConfig();
 
     public static final String STREAM_NAME = DIS_CONFIG.get("stream_name", null);
+    public static final String MQTT_TOPIC_NAME = DIS_CONFIG.get("mqtt_topic_name", null);
+    public static final String MQTT_USER_NAME = DIS_CONFIG.get("mqtt_user_name", null);
+    public static final String MQTT_PASSWORD = DIS_CONFIG.get("mqtt_password", null);
 
     public static final long PRODUCER_RECORD_NUM = (DIS_CONFIG.get("producer_record_num", null) == null
             || DIS_CONFIG.getInt("producer_record_num", -1) < 0) ?
