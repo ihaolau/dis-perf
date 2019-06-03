@@ -153,7 +153,7 @@ class AppConsumerThread extends Thread {
             String content = new String(record.getData().array());
             content = content.length() > Constants.DISPLAY_CONTENT_LIMIT ?
                     content.substring(0, Constants.DISPLAY_CONTENT_LIMIT) + "..." : content;
-            content.replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n");
+            content = content.replaceAll("\r", "\\\\r").replaceAll("\n", "\\\\n");
             String sequenceNumber = record.getSequenceNumber();
             Long timestamp = record.getTimestamp();
             LOGGER.debug("Content [{}], Partition [{}], SequenceNumber [{}], PartitionKey [{}], Timestamp [{}]",

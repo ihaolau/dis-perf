@@ -3,13 +3,9 @@ package com.bigdata.dis.sdk.demo.producer.kafka;
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Statistics;
 import com.bigdata.dis.sdk.demo.data.IData;
-import com.huaweicloud.dis.adapter.kafka.producer.DISKafkaProducer;
+import com.huaweicloud.dis.adapter.kafka.clients.producer.*;
 import com.huaweicloud.dis.iface.data.request.PutRecordsRequest;
 import com.huaweicloud.dis.iface.data.request.PutRecordsRequestEntry;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,9 +51,12 @@ class AppKafkaProducerThread extends Thread {
             statistics.totalSendRecords.addAndGet(putRecordsRequest.getRecords().size());
 
             for (PutRecordsRequestEntry putRecordsRequestEntry : putRecordsRequest.getRecords()) {
-                ProducerRecord<String, byte[]> producerRecord =
-                        new ProducerRecord<>(this.streamName,
-                                putRecordsRequestEntry.getData().array());
+                ProducerRecord<String, byte[]> producerRecord = new ProducerRecord<>(streamName,
+                        putRecordsRequestEntry.getPartitionId() == null ? null : Integer.valueOf(putRecordsRequestEntry.getPartitionId()),
+                        putRecordsRequestEntry.getPartitionKey(),
+                        putRecordsRequestEntry.getData().array());
+
+                new ProducerRecord<>(this.streamName, putRecordsRequestEntry.getData().array());
                 try {
                     producer.send(producerRecord, new Callback() {
                         @Override
@@ -65,6 +64,7 @@ class AppKafkaProducerThread extends Thread {
                             countDownLatch.countDown();
                             if (e != null) {
                                 statistics.totalSendFailedRecords.incrementAndGet();
+                                LOGGER.error("Failed to put [{}]", new String(producerRecord.value()));
                             } else {
                                 statistics.totalSendSuccessRecords.incrementAndGet();
                             }
@@ -73,6 +73,7 @@ class AppKafkaProducerThread extends Thread {
 
                     TimeUnit.MILLISECONDS.sleep(1);
                 } catch (Exception e) {
+                    LOGGER.error(e.getMessage(), e);
                     countDownLatch.countDown();
                 }
             }

@@ -52,7 +52,7 @@ public class Constants {
 
     public static final int UPDATE_PARTITION_COUNT = DIS_CONFIG.getInt("update_partition_count", 2);
     public static final int SERVER_FAILED_SLEEP_TIME = DIS_CONFIG.getInt("server_failed_sleep_time", 1000);
-    public static final int DISPLAY_CONTENT_LIMIT = DIS_CONFIG.getInt("display_content_limit", 1024);
+    public static final int DISPLAY_CONTENT_LIMIT = DIS_CONFIG.getInt("display_content_limit", Integer.MAX_VALUE);
 
     public static final String MQTT_INSTANCE_NAME = DIS_CONFIG.get("mqtt_instance_name", "instance1");
     public static final String MQTT_CLIENT_ID = DIS_CONFIG.get("mqtt_client_id", RandomStringUtils.randomAlphanumeric(10));

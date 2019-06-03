@@ -2,17 +2,16 @@ package com.bigdata.dis.sdk.demo.consumer.kafka;
 
 import com.bigdata.dis.sdk.demo.common.Constants;
 import com.bigdata.dis.sdk.demo.common.Statistics;
-import com.huaweicloud.dis.adapter.kafka.consumer.DISKafkaConsumer;
+import com.huaweicloud.dis.DISConfig;
+import com.huaweicloud.dis.adapter.kafka.clients.consumer.*;
+import com.huaweicloud.dis.adapter.kafka.common.PartitionInfo;
+import com.huaweicloud.dis.adapter.kafka.common.TopicPartition;
 import com.huaweicloud.dis.util.PartitionCursorTypeEnum;
-import org.apache.kafka.clients.consumer.Consumer;
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.ConsumerRecords;
-import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.TopicPartition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -31,7 +30,10 @@ class AppKafkaConsumerThread extends Thread {
     public AppKafkaConsumerThread(String streamName, Statistics statistics) {
         this.streamName = streamName;
         this.statistics = statistics;
-        consumer = new DISKafkaConsumer<>(Constants.DIS_CONFIG);
+        DISConfig disConfig = Constants.DIS_CONFIG;
+        disConfig.put(ConsumerConfig.GROUP_ID_CONFIG, Constants.CHECKPOINT_APP_NAME);
+        disConfig.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG, "false");
+        consumer = new DISKafkaConsumer<>(disConfig);
     }
 
     public void initPartition() {
@@ -53,7 +55,6 @@ class AppKafkaConsumerThread extends Thread {
         }
         consumer.assign(topicPartitions);
 
-
         if (PartitionCursorTypeEnum.TRIM_HORIZON == Constants.CONSUMER_CURSOR_TYPE) {
             consumer.seekToBeginning(topicPartitions);
         } else if (PartitionCursorTypeEnum.LATEST == Constants.CONSUMER_CURSOR_TYPE) {
@@ -74,9 +75,13 @@ class AppKafkaConsumerThread extends Thread {
                 statistics.totalRequestSuccessTimes.addAndGet(this.partitionSize);
                 statistics.totalSendSuccessRecords.addAndGet(consumerRecords.count());
                 statistics.totalPostponeMillis.addAndGet(cost);
-                if (LOGGER.isDebugEnabled()) {
-                    outputData(consumerRecords);
+                if (!consumerRecords.isEmpty()) {
+                    if (LOGGER.isDebugEnabled()) {
+                        outputData(consumerRecords);
+                    }
+                    consumer.commitAsync();
                 }
+
                 TimeUnit.MILLISECONDS.sleep(Constants.CONSUMER_REQUEST_SLEEP_TIME);
             } catch (Exception e) {
                 LOGGER.error(e.getMessage(), e);

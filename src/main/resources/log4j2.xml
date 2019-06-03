@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration status="WARN">
+    <properties>
+        <!--定义变量,亦可以调用系统变量,比如${env:TESTLOG}/test/logs,其中TESTLOG是自己添加的系统环境变量  -->
+        <property name="size">50MB</property>
+        <property name="index">10</property>
+    </properties>
     <Appenders>
         <Console name="Console" target="SYSTEM_OUT">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{0} - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.} - %msg%n"/>
         </Console>
 
         <RollingFile name="RollingFileInfo" fileName="logs/perf.log"
                      filePattern="logs/$${date:yyyy-MM}/app-%d{yyyy-MM-dd}-%i.log">
-            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{1.} - %msg%n"/>
             <Policies>
                 <TimeBasedTriggeringPolicy/>
                 <SizeBasedTriggeringPolicy size="3096 MB"/>
@@ -19,6 +24,49 @@
                 </Delete>
             </DefaultRolloverStrategy>
         </RollingFile>
+
+        <!-- LOGGEN -->
+        <RollingFile name="LoggenFile0" fileName="logs/loggen0.log" filePattern="logs/demolog0-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${size}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="max" max="${index}"/>
+        </RollingFile>
+        <RollingFile name="LoggenFile1" fileName="logs/loggen1.log" filePattern="logs/demolog1-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${size}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="max" max="${index}"/>
+        </RollingFile>
+        <RollingFile name="LoggenFile2" fileName="logs/loggen2.log" filePattern="logs/demolog2-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${size}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="max" max="${index}"/>
+        </RollingFile>
+        <RollingFile name="LoggenFile3" fileName="logs/loggen3.log" filePattern="logs/demolog3-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${size}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="max" max="${index}"/>
+        </RollingFile>
+        <RollingFile name="LoggenFile4" fileName="logs/loggen4.log" filePattern="logs/demolog4-%d{MM-dd-yyyy}-%i.log">
+            <PatternLayout pattern="%msg%n"/>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${size}"/>
+            </Policies>
+            <DefaultRolloverStrategy fileIndex="max" max="${index}"/>
+        </RollingFile>
+
     </Appenders>
     <Loggers>
         <Root level="INFO">
@@ -26,22 +74,40 @@
             <AppenderRef ref="RollingFileInfo"/>
         </Root>
 
+        <!-- LOGGEN -->
+        <logger name="com.bigdata.dis.sdk.demo.other.loggen.LogGen0" level="INFO">
+            <AppenderRef ref="LoggenFile0"/>
+        </logger>
+        <logger name="com.bigdata.dis.sdk.demo.other.loggen.LogGen1" level="INFO">
+            <AppenderRef ref="LoggenFile1"/>
+        </logger>
+        <logger name="com.bigdata.dis.sdk.demo.other.loggen.LogGen2" level="INFO">
+            <AppenderRef ref="LoggenFile2"/>
+        </logger>
+        <logger name="com.bigdata.dis.sdk.demo.other.loggen.LogGen3" level="INFO">
+            <AppenderRef ref="LoggenFile3"/>
+        </logger>
+        <logger name="com.bigdata.dis.sdk.demo.other.loggen.LogGen4" level="INFO">
+            <AppenderRef ref="LoggenFile4"/>
+        </logger>
+
         <logger name="org.springframework" level="INFO"/>
-        <logger name="org.apache.http" level="ERROR"/>
+        <logger name="org.apache.http" level="INFO"/>
         <logger name="org.apache.http.headers" level="ERROR"/>
         <logger name="com.huaweicloud.dis.DISConfig" level="WARN"/>
         <logger name="com.huaweicloud.dis.util.config.ConfigurationUtils" level="WARN"/>
+        <logger name="dis-interface-detail" level="INFO"/>
 
         <!-- DEBUG 表示显示MQTT上传的内容 -->
         <logger name="com.bigdata.dis.sdk.demo.producer.mqtt.MQTTClient" level="INFO"/>
         <!-- DEBUG 表示显示Kafka消费的记录内容；INFO 表示不显示 -->
-        <logger name="com.bigdata.dis.sdk.demo.consumer.kafka.AppKafkaConsumerThread" level="INFO"/>
-
+        <logger name="com.bigdata.dis.sdk.demo.consumer.kafka.AppKafkaConsumerThread" level="DEBUG"/>
         <!-- DEBUG 表示显示消费的每条记录内容；INFO 表示不显示消费的每条记录内容 -->
         <logger name="com.bigdata.dis.sdk.demo.consumer.AppConsumerThread" level="DEBUG"/>
         <!-- DEBUG 表示显示每条上传的结果；INFO 表示不显示每条上传的结果 -->
-        <logger name="com.bigdata.dis.sdk.demo.producer.AppProducerThread" level="DEBUG"/>
+        <logger name="com.bigdata.dis.sdk.demo.producer.AppProducerThread" level="INFO"/>
         <!-- INFO 表示打开统计信息打印；WARN 表示关闭统计信息打印 -->
         <logger name="com.bigdata.dis.sdk.demo.common.Statistics" level="INFO"/>
+
     </Loggers>
 </Configuration>
